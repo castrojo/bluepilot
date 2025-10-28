@@ -34,67 +34,42 @@ To enable the workflows, go to the `Actions` tab of the new repository and click
 
 ### Step 1b: Enabling Renovate (Recommended)
 
-[Renovate](https://docs.renovatebot.com/) is a dependency update tool that will automatically keep your base image and other dependencies up to date. This template includes a pre-configured Renovate setup that will:
+[Renovate](https://docs.renovatebot.com/) is a dependency update tool that will automatically keep your base image and other dependencies up to date. This template includes:
 
-- Monitor your base image (defined in the `Containerfile`) for updates
-- Automatically merge digest updates to keep your image secure
-- Create pull requests for version updates
-- Track the bootc-image-builder and other tools in the `Justfile`
+- **Automated Renovate workflow** (`.github/workflows/renovate.yml`) that runs every 6 hours
+- Pre-configured rules (`.github/renovate.json5`) for tracking your base image
+- Automatic merging of digest updates (security patches)
+- Automatic build triggering when the upstream image changes
 
-#### Option 1: Using the Renovate GitHub App (Recommended)
-
-1. Go to the [Renovate GitHub App](https://github.com/apps/renovate) page
-2. Click "Install" or "Configure" if you've already installed it
-3. Select the repositories where you want to enable Renovate (or select "All repositories")
-4. Renovate will automatically detect the `.github/renovate.json5` configuration and start monitoring your dependencies
-
-#### Option 2: Using Renovate with GitHub Actions
-
-If you prefer not to use the GitHub App, you can run Renovate as a GitHub Action:
-
-1. Create a Personal Access Token (PAT) with `repo` scope
-2. Add it as a repository secret named `RENOVATE_TOKEN`
-3. Create a workflow file `.github/workflows/renovate.yml`:
-
-```yaml
-name: Renovate
-on:
-  schedule:
-    - cron: '0 * * * *'  # Run every hour
-  workflow_dispatch:
-
-jobs:
-  renovate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Self-hosted Renovate
-        uses: renovatebot/github-action@v40
-        with:
-          token: ${{ secrets.RENOVATE_TOKEN }}
-```
+**Setup is automatic!** The included workflow uses `GITHUB_TOKEN` and runs every 6 hours. No additional configuration needed.
 
 #### What Renovate Monitors
 
-With the included configuration, Renovate will automatically track:
+The automated workflow will track:
 
-- **Base Image**: The `FROM` statement in your `Containerfile` (e.g., `ghcr.io/ublue-os/bazzite:stable`)
+- **Base Image**: The `FROM` statement in your `Containerfile` (e.g., `ghcr.io/ublue-os/bluefin:stable`)
+  - Digest updates (security patches) are auto-merged and trigger a rebuild
+  - Version updates (e.g., `stable` → `latest`) require manual review
 - **Bootc Image Builder**: The `bib_image` variable in the `Justfile`
 - **GitHub Actions**: Workflow dependencies in `.github/workflows/`
 
-When you change your base image in the `Containerfile`, Renovate will automatically start tracking the new image - no configuration changes needed!
+When you change your base image in the `Containerfile`, Renovate will automatically start tracking the new image without requiring any configuration changes!
 
-#### Automerge Behavior
+#### How It Works
 
-Renovate is configured to automatically merge:
-- Digest updates (security patches) for your base image
-- Pin updates across all dependencies
+1. **Every 6 hours**: Renovate checks for updates to your dependencies
+2. **Digest updates**: When your base image gets security patches, Renovate:
+   - Creates a PR with the new digest
+   - Auto-merges the PR (labeled with `renovate` and `automerge`)
+   - Triggers the build workflow automatically
+3. **Version updates**: Creates a PR for manual review (e.g., switching from `stable` to `latest`)
 
-Manual review is required for:
-- Version updates (e.g., `stable` → `latest`)
-- Updates to build tools like `bootc-image-builder` that may require testing
+#### Manual Trigger
+
+You can manually trigger Renovate at any time:
+- Go to the **Actions** tab
+- Select **Renovate** workflow
+- Click **Run workflow**
 
 ### Step 1c: Cloning the New Repository
 

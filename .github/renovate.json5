@@ -26,9 +26,12 @@
       "matchUpdateTypes": ["pin", "pinDigest"]
     },
     {
+      "description": "Auto-merge digest updates for base image and trigger build",
       "automerge": true,
       "matchManagers": ["dockerfile"],
-      "matchUpdateTypes": ["digest"]
+      "matchUpdateTypes": ["digest"],
+      "matchFileNames": ["Containerfile"],
+      "labels": ["renovate", "automerge"],
     },
     {
       "matchUpdateTypes": ["pin", "digest", "pinDigest"],
