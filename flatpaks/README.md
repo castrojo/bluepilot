@@ -34,16 +34,16 @@ See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-p
 
 ## Example Files
 
-- `default.flatpakref` - Default applications for all users
-- `development.flatpakref` - Additional development tools
-- `gnome.flatpakref` - GNOME-specific applications
+- `default.preinstall` - Default applications for all users
+- `development.preinstall` - Additional development tools
+- `gnome.preinstall` - GNOME-specific applications (example)
 
 ## Usage
 
 ### Adding Flatpaks to Your Image
 
-1. Create or edit a `.flatpakref` file in this directory
-2. Add Flatpak references, one per line
+1. Create or edit a `.preinstall` file in this directory
+2. Add Flatpak references in INI format with `[Flatpak Preinstall NAME]` sections
 3. Build your image - the files will be copied to `/etc/flatpak/preinstall.d/`
 4. On first boot, Flatpaks will be automatically installed
 
@@ -59,12 +59,12 @@ Or browse Flathub: https://flathub.org/
 ## Bluefin Default Flatpaks
 
 The included files mirror the default Flatpaks from Bluefin:
-- `default.flatpakref` - Core applications (browsers, utilities, GNOME apps)
-- `development.flatpakref` - Development-focused applications
+- `default.preinstall` - Core applications (browsers, utilities, GNOME apps)
+- `development.preinstall` - Development-focused applications
 
 ## Important Notes
 
-- Files must use the `.flatpakref` extension
+- Files must use the `.preinstall` extension
 - Comments can be added with `#`
 - Empty lines are ignored
 - Applications install from Flathub by default
