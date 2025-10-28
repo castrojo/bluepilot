@@ -264,5 +264,5 @@ For more details, see the [flatpaks directory README](/custom/flatpaks/README.md
 
 For packages that must be in the base image:
 
-- **Package Installation**: Edit [`build/10-10-build.sh`](build/10-10-build.sh) to install system packages using dnf5
-- **System Services**: Enable or disable systemd services in [`build/10-10-build.sh`](build/10-10-build.sh)
+- **Package Installation**: Edit [`build/10-build.sh`](build/10-build.sh) to install system packages using dnf5
+- **System Services**: Enable or disable systemd services in [`build/10-build.sh`](build/10-build.sh)

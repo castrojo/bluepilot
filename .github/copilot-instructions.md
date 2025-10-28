@@ -29,7 +29,7 @@ This repository is a Universal Blue bootc image template for creating custom Lin
 ├── README.md                  # User documentation
 ├── artifacthub-repo.yml       # Optional ArtifactHub metadata
 ├── build/
-│   └── build.sh              # Script for installing packages and system modifications
+│   └── 10-build.sh              # Script for installing packages and system modifications
 ├── custom/                    # User customization files
 │   ├── brew/                 # Homebrew Brewfiles for package installation
 │   │   ├── default.Brewfile
@@ -354,7 +354,7 @@ owners:
 
 ### 9. ADVANCED CONTAINERFILE MODIFICATIONS
 
-**When**: User needs advanced customization beyond build.sh.
+**When**: User needs advanced customization beyond 10-build.sh.
 
 **Scenarios**:
 
@@ -370,7 +370,7 @@ RUN rm /opt && mkdir /opt
 ```dockerfile
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
-    /ctx/build.sh && \
+    /ctx/10-build.sh && \
     /ctx/post-install.sh
 ```
 
@@ -384,7 +384,7 @@ COPY --from=ctx /custom-configs /etc/
 Files in `build_files/` are available at `/ctx/` during build.
 
 **Decision Logic**:
-- Use build.sh for 95% of customizations
+- Use 10-build.sh for 95% of customizations
 - Only edit Containerfile for:
   - Changing base image
   - Multi-stage builds
@@ -426,7 +426,7 @@ just build-iso
 
 **Decision Logic**:
 - Always test locally before pushing to main branch
-- Use `just build` for quick iteration on build.sh changes
+- Use `just build` for quick iteration on 10-build.sh changes
 - Use `just build-qcow2` to test full boot process
 - Use `just run-vm-qcow2` to test in actual VM environment
 
@@ -545,14 +545,14 @@ cosign.key  # Must be present
 ## Critical Rules
 
 1. **NEVER** commit `cosign.key` to the repository
-2. **ALWAYS** disable COPRs after use in build.sh
-3. **ALWAYS** use `dnf5` (not dnf or yum) in build.sh
+2. **ALWAYS** disable COPRs after use in 10-build.sh
+3. **ALWAYS** use `dnf5` (not dnf or yum) in 10-build.sh
 4. **ALWAYS** use `-y` flag for non-interactive package installs
 5. **ALWAYS** set `COSIGN_PASSWORD=""` when generating keys
 6. **ALWAYS** update the bootc switch URL in iso.toml to match user's repo
 7. **ALWAYS** test base image syntax (common error: typos in image URLs)
-8. **NEVER** add passwords or secrets to build.sh or Containerfile
-9. **ALWAYS** keep build.sh modifications minimal for faster builds
+8. **NEVER** add passwords or secrets to 10-build.sh or Containerfile
+9. **ALWAYS** keep 10-build.sh modifications minimal for faster builds
 10. **ALWAYS** run `bootc container lint` is in Containerfile (catches many errors)
 11. **NEVER** install packages via dnf5 in ujust files - only use Brewfile shortcuts or Flatpak for runtime software installation
 
@@ -582,7 +582,7 @@ Users should reference `latest` tag unless they need pinned versions.
 → Verify bootc switch URL in iso.toml points to correct ghcr.io URL
 
 **systemd service not enabled after install**:
-→ Add `systemctl enable service.name` to build.sh
+→ Add `systemctl enable service.name` to 10-build.sh
 
 **COPR packages missing after boot**:
 → COPR wasn't disabled - repos don't transfer to final image
@@ -606,7 +606,7 @@ When user requests customization, modify in this order:
 ## Performance Optimization Notes
 
 - Each RUN layer in Containerfile creates overhead
-- Combine commands in build.sh rather than multiple RUN directives
+- Combine commands in 10-build.sh rather than multiple RUN directives
 - Use build caches (already configured in Containerfile)
 - Enable rechunk for better layer distribution
 - Minimize installed packages for faster builds and smaller images
