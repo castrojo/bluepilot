@@ -8,8 +8,8 @@
 contents = """
 %post
 # After installation, switch to the custom image from this repository
-# This URL will be automatically updated to match your repository
-bootc switch --mutate-in-place --transport registry ghcr.io/castrojo/bluepilot:latest
+# IMPORTANT: Update this URL to match your repository (ghcr.io/USERNAME/REPO:latest)
+bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:latest
 %end
 """
 
