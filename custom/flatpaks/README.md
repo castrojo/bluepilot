@@ -45,23 +45,17 @@ Branch=stable
 
 See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 
-## Example Files
-
-- `default.preinstall` - Default applications for all users
-
-You can create additional `.preinstall` files for different purposes:
-- `development.preinstall` - Additional development tools
-- `gnome.preinstall` - GNOME-specific applications
-- `gaming.preinstall` - Gaming applications
-
 ## Usage
 
 ### Adding Flatpaks to Your Image
 
-1. Create or edit a `.preinstall` file in this directory
+1. Edit [`default.preinstall`](default.preinstall) or create new `.preinstall` files in this directory
 2. Add Flatpak references in INI format with `[Flatpak Preinstall NAME]` sections
 3. Build your image - the files will be copied to `/etc/flatpak/preinstall.d/`
-4. On first boot, Flatpaks will be automatically installed
+4. After user setup completes, Flatpaks will be automatically installed
+
+**Example Files in this directory:**
+- [`default.preinstall`](default.preinstall) - Core applications from Bluefin
 
 ### Finding Flatpak IDs
 
@@ -72,11 +66,16 @@ flatpak search app-name
 
 Or browse Flathub: https://flathub.org/
 
-## Bluefin Default Flatpaks
+## Customization
 
-The included `default.preinstall` file mirrors the core default Flatpaks from Bluefin with browsers, utilities, and GNOME applications.
+Edit the existing file or create new ones:
+- **[`default.preinstall`](default.preinstall)** - Modify the default application list
+- **Create new files:**
+  - `development.preinstall` - Development tools
+  - `gaming.preinstall` - Gaming applications
+  - `media.preinstall` - Media editing tools
 
-You can create additional `.preinstall` files for different categories (development tools, gaming, media editing, etc.).
+Each new `.preinstall` file will be automatically copied during the build process. See [`build_files/build.sh`](../../build_files/build.sh) for how files are copied.
 
 ## Important Notes
 
@@ -88,13 +87,6 @@ You can create additional `.preinstall` files for different categories (developm
 - Installation happens automatically after user setup completes
 - Users can still uninstall these applications if desired
 - First boot will take longer while Flatpaks are being installed
-
-## Customization
-
-Edit the files to match your needs:
-- Remove applications you don't want
-- Add new applications from Flathub
-- Create separate files for different user profiles
 
 ## Resources
 
