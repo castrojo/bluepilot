@@ -193,3 +193,33 @@ The [renovate.json5](./.github/renovate.json5) file configures [Renovate](https:
 - **Package Rules**: Specific rules for different types of updates and packages
 
 The configuration is designed to automatically track whatever base image you choose in the `Containerfile`. When you change your base image, Renovate will automatically start monitoring the new image without requiring any configuration changes.
+
+## Customization
+
+### Brew (Homebrew) Support
+
+This template includes support for [Homebrew](https://brew.sh/) package management. The `/brew` directory contains Brewfiles that will be included in your custom image and made available to users.
+
+**What's included:**
+- `default.Brewfile` - Common CLI tools and utilities (bat, eza, fd, ripgrep, gh, starship, etc.)
+- `development.Brewfile` - Development tools (kubernetes, cloud tools, programming languages)
+- `fonts.Brewfile` - Nerd Fonts for terminal use
+
+**How to customize:**
+1. Edit the example Brewfiles in the `/brew` directory to add or remove packages
+2. Create new `.Brewfile` files for your specific needs
+3. All `.Brewfile` files will be copied to `/usr/share/ublue-os/homebrew/` during build
+
+**Using Brewfiles on your system:**
+After switching to your custom image, install packages from a Brewfile:
+```bash
+brew bundle --file=/usr/share/ublue-os/homebrew/default.Brewfile
+```
+
+For more details, see the [brew directory README](/brew/README.md).
+
+### Other Customizations
+
+- **Package Installation**: Edit `build_files/build.sh` to install system packages using dnf5
+- **System Services**: Enable or disable systemd services in `build_files/build.sh`
+- **Advanced Changes**: Modify the `Containerfile` for advanced container customization

@@ -22,3 +22,9 @@ dnf5 install -y tmux
 #### Example for enabling a System Unit File
 
 systemctl enable podman.socket
+
+### Copy Brewfiles
+# Copy all Brewfiles from /brew to /usr/share/ublue-os/homebrew/
+# These will be available for users to install packages via Homebrew/Brew
+mkdir -p /usr/share/ublue-os/homebrew/
+cp /ctx/brew/*.Brewfile /usr/share/ublue-os/homebrew/
