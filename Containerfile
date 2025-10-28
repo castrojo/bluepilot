@@ -2,6 +2,7 @@
 FROM scratch AS ctx
 COPY build_files /
 COPY brew /brew
+COPY ujust /ujust
 
 # Base Image
 FROM ghcr.io/ublue-os/bluefin:stable
