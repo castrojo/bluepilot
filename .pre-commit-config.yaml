@@ -1,0 +1,20 @@
+# .pre-commit-config.yaml
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+        - id: check-json
+        - id: check-toml
+        - id: check-yaml
+        - id: end-of-file-fixer
+        - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: validate-brewfiles
+        name: Validate Brewfiles
+        entry: bash -c 'if command -v brew &> /dev/null; then for file in brew/*.Brewfile*; do [ -f "$file" ] || continue; brew bundle check --file="$file" || exit 1; done; else echo "⚠️  Homebrew not installed, skipping Brewfile validation"; fi'
+        language: system
+        files: '^brew/.*\.Brewfile.*$'
+        pass_filenames: false
