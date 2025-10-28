@@ -145,7 +145,7 @@ clean-containers:
 
 ## Important: Package Installation
 
-**Do not install packages via dnf5/rpm in ujust commands.** Bootc images are immutable and package installation should happen at build time in [`build_files/build.sh`](../../build_files/build.sh).
+**Do not install packages via dnf5/rpm in ujust commands.** Bootc images are immutable and package installation should happen at build time in [`build/build.sh`](../../build/build.sh).
 
 For runtime package installation, use:
 - **Brewfiles** - Create shortcuts to Brewfiles in [`custom/brew/`](../brew/)
@@ -192,7 +192,7 @@ just --justfile custom/ujust/custom-apps.just install-something
 - `custom-media.just` - Media editing workflows
 - `custom-dev.just` - Development environment setups
 
-All `.just` files in this directory are automatically included. See [`build_files/build.sh`](../../build_files/build.sh) for the consolidation logic.
+All `.just` files in this directory are automatically included. See [`build/build.sh`](../../build/build.sh) for the consolidation logic.
 
 ## Groups for Organization
 

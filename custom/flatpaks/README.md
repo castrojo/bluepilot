@@ -75,7 +75,7 @@ Edit the existing file or create new ones:
   - `gaming.preinstall` - Gaming applications
   - `media.preinstall` - Media editing tools
 
-Each new `.preinstall` file will be automatically copied during the build process. See [`build_files/build.sh`](../../build_files/build.sh) for how files are copied.
+Each new `.preinstall` file will be automatically copied during the build process. See [`build/build.sh`](../../build/build.sh) for how files are copied.
 
 ## Important Notes
 

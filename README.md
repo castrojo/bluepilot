@@ -195,6 +195,6 @@ For more details, see the [brew directory README](/custom/brew/README.md).
 
 ### Other Customizations
 
-- **Package Installation**: Edit `build_files/build.sh` to install system packages using dnf5
-- **System Services**: Enable or disable systemd services in `build_files/build.sh`
+- **Package Installation**: Edit `build/build.sh` to install system packages using dnf5
+- **System Services**: Enable or disable systemd services in `build/build.sh`
 - **Advanced Changes**: Modify the `Containerfile` for advanced container customization
