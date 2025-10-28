@@ -30,7 +30,7 @@ ujust/
 # Install a development tool
 install-something:
     echo "Installing something..."
-    rpm-ostree install package-name
+    sudo dnf5 install -y package-name
 ```
 
 ### Interactive Command with gum

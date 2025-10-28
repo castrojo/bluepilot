@@ -84,7 +84,7 @@ update-and-reboot:
     #!/usr/bin/bash
     source /usr/lib/ujust/ujust.sh
     echo "Updating system..."
-    rpm-ostree upgrade
+    sudo bootc upgrade
     if gum confirm "Reboot now to apply updates?"; then
         systemctl reboot
     else
