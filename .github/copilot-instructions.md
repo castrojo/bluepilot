@@ -387,6 +387,9 @@ cosign.key  # Must be present
 ### "I need to install from a COPR"
 → Edit `build_files/build.sh`, add COPR enable → install → CRITICAL: COPR disable
 
+### "I want to add ujust commands for users"
+→ Create `.just` files in `ujust/` directory with commands like system config, Brewfile shortcuts. **NEVER** install packages via dnf5 in ujust - use Brewfile shortcuts instead
+
 ### "The build is failing"
 → Check: 1) SIGNING_SECRET exists, 2) base image syntax correct, 3) package names correct, 4) COPRs disabled after use
 
@@ -397,7 +400,7 @@ cosign.key  # Must be present
 
 1. **NEVER** commit `cosign.key` to the repository
 2. **ALWAYS** disable COPRs after use in build.sh
-3. **ALWAYS** use `dnf5` (not dnf or yum)
+3. **ALWAYS** use `dnf5` (not dnf or yum) in build.sh
 4. **ALWAYS** use `-y` flag for non-interactive package installs
 5. **ALWAYS** set `COSIGN_PASSWORD=""` when generating keys
 6. **ALWAYS** update the bootc switch URL in iso.toml to match user's repo
@@ -405,6 +408,7 @@ cosign.key  # Must be present
 8. **NEVER** add passwords or secrets to build.sh or Containerfile
 9. **ALWAYS** keep build.sh modifications minimal for faster builds
 10. **ALWAYS** run `bootc container lint` is in Containerfile (catches many errors)
+11. **NEVER** install packages via dnf5 in ujust files - only use Brewfile shortcuts or Flatpak for runtime software installation
 
 ## Image Tag Patterns in Workflow
 

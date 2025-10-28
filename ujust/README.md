@@ -27,10 +27,10 @@ ujust/
 
 ### Basic Command
 ```just
-# Install a development tool
-install-something:
-    echo "Installing something..."
-    sudo dnf5 install -y package-name
+# Run a system maintenance task
+run-maintenance:
+    echo "Running maintenance..."
+    sudo systemctl restart some-service
 ```
 
 ### Interactive Command with gum
@@ -54,8 +54,8 @@ configure-thing:
 ```just
 # Groups organize commands in ujust help
 [group('Apps')]
-install-flatpak-app:
-    flatpak install -y flathub org.example.App
+install-brewfile:
+    brew bundle --file /usr/share/ublue-os/homebrew/development.Brewfile
 ```
 
 ## Best Practices
@@ -99,11 +99,11 @@ interactive-command:
 
 ## Common Use Cases
 
-### 1. Installing Optional Software
+### 1. Installing Software via Brewfiles
 ```just
 [group('Apps')]
-install-vscode:
-    flatpak install -y flathub com.visualstudio.code
+install-dev-tools:
+    brew bundle --file /usr/share/ublue-os/homebrew/development.Brewfile
 ```
 
 ### 2. System Configuration
@@ -131,6 +131,22 @@ setup-nodejs:
 clean-containers:
     podman system prune -af
     podman volume prune -f
+```
+
+## Important: Package Installation
+
+**Do not install packages via dnf5/rpm in ujust commands.** Bootc images are immutable and package installation should happen at build time in the Containerfile.
+
+For runtime package installation, use:
+- **Brewfiles** - Create shortcuts to Brewfiles in `/usr/share/ublue-os/homebrew/`
+- **Flatpak** - Install Flatpaks for GUI applications
+- **Containers** - Use toolbox/distrobox for development environments
+
+Example Brewfile shortcut:
+```just
+[group('Apps')]
+install-fonts:
+    brew bundle --file /usr/share/ublue-os/homebrew/fonts.Brewfile
 ```
 
 ## Available Helpers
