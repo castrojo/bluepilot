@@ -35,8 +35,11 @@ See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-p
 ## Example Files
 
 - `default.preinstall` - Default applications for all users
+
+You can create additional `.preinstall` files for different purposes:
 - `development.preinstall` - Additional development tools
-- `gnome.preinstall` - GNOME-specific applications (example)
+- `gnome.preinstall` - GNOME-specific applications
+- `gaming.preinstall` - Gaming applications
 
 ## Usage
 
@@ -58,9 +61,9 @@ Or browse Flathub: https://flathub.org/
 
 ## Bluefin Default Flatpaks
 
-The included files mirror the default Flatpaks from Bluefin:
-- `default.preinstall` - Core applications (browsers, utilities, GNOME apps)
-- `development.preinstall` - Development-focused applications
+The included `default.preinstall` file mirrors the core default Flatpaks from Bluefin with browsers, utilities, and GNOME applications.
+
+You can create additional `.preinstall` files for different categories (development tools, gaming, media editing, etc.).
 
 ## Important Notes
 
