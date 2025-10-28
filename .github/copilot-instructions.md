@@ -1,5 +1,22 @@
 # Copilot Instructions for Customizing bootc Image Template
 
+## CRITICAL: Template Initialization
+
+**WHEN THIS REPOSITORY IS USED AS A TEMPLATE, YOU MUST:**
+
+1. **Immediately check the repository name** from the user or from `github.event.repository.name`
+2. **Rename ALL instances of `finpilot`** to match the new repository name
+3. **Update these 5 files in order:**
+   - `Containerfile` (line 9): `# Name: new-repo-name`
+   - `Justfile` (line 1): `export image_name := env("IMAGE_NAME", "new-repo-name")`
+   - `README.md` (line 1): `# new-repo-name`
+   - `artifacthub-repo.yml` (line 5): `repositoryID: new-repo-name`
+   - `custom/ujust/README.md` (~line 175): `localhost/new-repo-name:latest`
+
+4. **Never leave `finpilot` as the name** in a templated repository - it's only an example
+
+**This is NOT optional.** The first action when someone uses this template is to rename the project from `finpilot` to their repository name.
+
 ## Overview
 This repository is a Universal Blue bootc image template for creating custom Linux operating systems. When users ask for customizations, follow this guide to make efficient, correct decisions without exploring multiple options.
 

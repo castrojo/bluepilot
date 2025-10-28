@@ -2,6 +2,39 @@
 
 This repository is meant to be a template for building your own custom [bootc](https://github.com/bootc-dev/bootc) image. This template is the recommended way to make customizations to any image published by the Universal Blue Project.
 
+## ⚠️ Important: First Steps After Using This Template
+
+**When you create a repository from this template, you MUST rename the project:**
+
+`finpilot` is just an example name. Follow these steps immediately after creating your repository:
+
+1. **Update the Containerfile** (line 9):
+   ```dockerfile
+   # Name: your-repo-name
+   ```
+
+2. **Update the Justfile** (line 1):
+   ```just
+   export image_name := env("IMAGE_NAME", "your-repo-name")
+   ```
+
+3. **Update README.md** (line 1):
+   ```markdown
+   # your-repo-name
+   ```
+
+4. **Update artifacthub-repo.yml** (line 5):
+   ```yaml
+   repositoryID: your-repo-name
+   ```
+
+5. **Update custom/ujust/README.md** (~line 175):
+   ```bash
+   sudo bootc switch --target localhost/your-repo-name:latest
+   ```
+
+**All 5 files must use the same name for consistency.** The Containerfile comment (line 9) is the single source of truth.
+
 # Community
 
 If you have questions about this template after following the instructions, try the following spaces:
