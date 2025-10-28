@@ -140,18 +140,21 @@ export image_name := env("IMAGE_NAME", "my-custom-image")
 - If user wants different CI/CD name, edit `.github/workflows/build.yml` env var `IMAGE_NAME`
 - No need to change unless they want image name different from repo name
 
-### 4. CONFIGURING DISK IMAGE BUILDS
+### 4. CONFIGURING DISK IMAGE BUILDS (LOCAL TESTING ONLY)
 
-**When**: User wants to customize ISO or VM disk images.
+**When**: User wants to customize ISO or VM disk images for local testing.
 
 **Where**: Edit files in `disk_config/` directory
 
+**Important**: This template no longer includes automated ISO/disk building workflows. 
+Disk images are built locally using the `just` commands for testing purposes only.
+
 **Decision Matrix**:
 
-| Use Case | File to Edit | Type Value |
-|----------|--------------|------------|
-| VM images (QCOW2, RAW) | `disk_config/disk.toml` | `qcow2` or `raw` |
-| ISO installer (auto-install) | `disk_config/iso-gnome.toml` or `iso-kde.toml` | `anaconda-iso` |
+| Use Case | File to Edit | Just Command |
+|----------|--------------|--------------|
+| VM images (QCOW2, RAW) | `disk_config/disk.toml` | `just build-qcow2` |
+| ISO installer | `disk_config/iso.toml` | `just build-iso` |
 
 **disk.toml Configuration**:
 ```toml
@@ -160,13 +163,13 @@ mountpoint = "/"
 minsize = "20 GiB"  # Minimum root partition size
 ```
 
-**ISO Configuration Files**:
+**iso.toml Configuration**:
 
-Both `iso-gnome.toml` and `iso-kde.toml` contain:
+The `iso.toml` file contains:
 1. **Kickstart commands** - Post-installation automation
 2. **Anaconda modules** - Which installer screens to show
 
-**Critical**: Always update the `bootc switch` command in ISO files:
+**Critical**: Always update the `bootc switch` command in iso.toml to match your repository:
 ```toml
 [customizations.installer.kickstart]
 contents = """
@@ -177,10 +180,9 @@ bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:latest
 ```
 
 **Decision Logic**:
-- GNOME ISO if user's base is Bluefin, Bazzite, or mentions GNOME
-- KDE ISO if user's base is Aurora or mentions KDE/Plasma
-- Use `disk.toml` for VM testing or cloud deployments
-- ISO images are for bare metal installations
+- Use `disk.toml` for VM testing (QCOW2/RAW images)
+- Use `iso.toml` for creating bootable installation media
+- Both are for local testing only - no automated builds in CI/CD
 
 ### 5. CUSTOMIZING BUILD METADATA
 
@@ -286,66 +288,49 @@ just build-iso
 
 **When**: User asks about CI/CD, automated builds, or publishing.
 
-**Two Workflows**:
+**Single Workflow**:
 
-**A. build.yml** - Main image builder
+**build.yml** - Main image builder
 - **Triggers**: Push to main, PRs, schedule (daily at 10:05 AM UTC), manual
 - **Purpose**: Builds container image and publishes to GHCR
 - **Output**: `ghcr.io/username/repo-name:latest`
 - **Signing**: Uses cosign with `SIGNING_SECRET` repository secret. The user must know that they need to set this up.
 
-**B. build-disk.yml** - Disk image builder
-- **Triggers**: Manual workflow dispatch only (by default)
-- **Purpose**: Builds bootable ISO and VM images
-- **Matrix**: Builds both `qcow2` and `anaconda-iso` types
-- **Platform**: Supports amd64 and arm64 (via workflow input)
-- **Output**: Artifacts or S3 upload
-
-**Modifying Triggers**:
-
-To enable automatic ISO builds on push:
-```yaml
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-```
+**Note on Disk Images**:
+- This template no longer includes automated ISO/disk image building workflows
+- ISO and disk images are built locally using `just build-iso` and `just build-qcow2`
+- For distribution, users can manually build and upload using the rclone configurations in the `/rclone` directory
 
 **Decision Logic**:
 - build.yml runs automatically - no changes needed for typical use
-- build-disk.yml is manual by default (ISO builds are expensive)
-- Only modify triggers if user explicitly wants automated ISO builds
 - For faster builds, consider enabling rechunk (commented in build.yml)
+- Disk/ISO images are for local testing and manual distribution only
 
-### 9. SETTING UP S3 FOR DISK IMAGES
+### 9. RCLONE CONFIGURATION FOR MANUAL UPLOADS
 
-**When**: User wants to upload ISOs/disk images to cloud storage.
+**When**: User wants to upload locally-built ISOs/disk images to cloud storage.
 
-**Where**: GitHub Repository Settings → Secrets and Variables → Actions
+**Where**: `/rclone` directory contains example configurations
 
-**Required Secrets**:
-```
-S3_PROVIDER          # e.g., "Cloudflare", "AWS", "Backblaze"
-S3_BUCKET_NAME       # Your bucket name
-S3_ACCESS_KEY_ID     # Access key
-S3_SECRET_ACCESS_KEY # Secret key
-S3_REGION            # Region or "auto"
-S3_ENDPOINT          # Provider-specific endpoint
-```
+**Available Providers**:
+- `cloudflare-r2.conf` - Cloudflare R2 (S3-compatible, zero egress fees)
+- `aws-s3.conf` - AWS S3 (highly reliable, standard pricing)
+- `backblaze-b2.conf` - Backblaze B2 (affordable, low egress fees)
+- `sftp.conf` - SFTP upload to any server
+- `scp.conf` - SCP upload to any server
 
-**Workflow**: Edit `.github/workflows/build-disk.yml` workflow dispatch input to default true:
-```yaml
-upload-to-s3:
-  default: true  # Changed from false
-```
+**How to Use**:
+1. Choose a provider configuration from `/rclone` directory
+2. Follow the setup instructions in the config file
+3. Set up the required secrets/credentials
+4. Build ISO locally: `just build-iso`
+5. Use rclone to upload: `rclone copy <local-path> <remote>:<bucket>`
 
 **Decision Logic**:
-- Artifacts (default) are simpler but expire
-- S3 is for long-term hosting and distribution
-- Use Cloudflare R2 (S3-compatible, free egress)
-- Backblaze B2 (affordable)
-- AWS S3 (most expensive, but most reliable)
+- Cloudflare R2 for frequent downloads (zero egress)
+- AWS S3 for maximum reliability
+- Backblaze B2 for cost-effective storage
+- SFTP/SCP for your own server infrastructure
 
 ### 10. SECURITY: COSIGN SIGNING
 
@@ -391,7 +376,7 @@ cosign.key  # Must be present
 → Use `just build` then `just build-qcow2` then `just run-vm-qcow2`
 
 ### "I want to create an ISO"
-→ Edit `disk_config/iso-gnome.toml` or `iso-kde.toml`, update bootc switch URL, run `just build-iso` locally or trigger build-disk.yml workflow
+→ Edit `disk_config/iso.toml` to update bootc switch URL to your repository, then run `just build-iso` locally for testing
 
 ### "How do I deploy this to my machine?"
 → After GitHub Actions builds successfully: `sudo bootc switch ghcr.io/username/repo:latest` then reboot
@@ -415,7 +400,7 @@ cosign.key  # Must be present
 3. **ALWAYS** use `dnf5` (not dnf or yum)
 4. **ALWAYS** use `-y` flag for non-interactive package installs
 5. **ALWAYS** set `COSIGN_PASSWORD=""` when generating keys
-6. **ALWAYS** update the bootc switch URL in ISO TOML files to match user's repo
+6. **ALWAYS** update the bootc switch URL in iso.toml to match user's repo
 7. **ALWAYS** test base image syntax (common error: typos in image URLs)
 8. **NEVER** add passwords or secrets to build.sh or Containerfile
 9. **ALWAYS** keep build.sh modifications minimal for faster builds
@@ -478,9 +463,9 @@ When user requests customization, modify in this order:
 
 Currently templates default to amd64 (x86_64). For arm64:
 
-**In build-disk.yml**:
-- Workflow supports platform selection via input
-- Set `platform: arm64` when dispatching workflow manually
+**For Local Builds**:
+- Local `just` commands support the platform you're running on
+- Cross-platform builds require additional setup
 
 **Base Image Considerations**:
 - Verify base image has arm64 variant
@@ -501,11 +486,11 @@ Currently templates default to amd64 (x86_64). For arm64:
 | Add packages | build.sh | `just build` |
 | Change base | Containerfile | `just build` |
 | Rename image | Justfile | `just build` |
-| Customize ISO | disk_config/iso*.toml | `just build-iso` |
+| Customize ISO | disk_config/iso.toml | `just build-iso` |
 | Change VM size | disk_config/disk.toml | `just build-qcow2` |
 | Enable services | build.sh | `just build-qcow2` |
 | Add metadata | build.yml | Push to GitHub |
-| S3 upload | Add secrets | Workflow dispatch |
+| Upload images | rclone configs + manual upload | Local + rclone |
 
 ---
 
