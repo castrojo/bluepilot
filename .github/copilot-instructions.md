@@ -17,6 +17,37 @@
 
 **This is NOT optional.** The first action when someone uses this template is to rename the project from `finpilot` to their repository name.
 
+## CRITICAL: Follow Bluefin Conventions
+
+**ALWAYS ensure you follow the conventions established in @ublue-os/bluefin when implementing build scripts.**
+
+### Mandatory Practices:
+- **COPR Repositories**: Always enable → install → **DISABLE** COPRs immediately after use
+- **Package Management**: Use `dnf5` exclusively (never `dnf` or `yum`)
+- **Non-interactive**: Always use `-y` flag for all package operations
+- **Build Scripts**: Follow numbered script pattern (10-*, 20-*, etc.)
+- **Cleanup**: Remove temporary files and repositories after installation
+
+### Before Deviating from Patterns:
+- **Confirm with the user** before implementing approaches that differ from Bluefin
+- **Check Bluefin repository** for established patterns when uncertain
+- **Explain the deviation** and why it's necessary if approved
+
+### Examples of Enforced Patterns:
+```bash
+# CORRECT: COPR usage
+dnf5 -y copr enable username/repo-name
+dnf5 -y install package-name
+dnf5 -y copr disable username/repo-name  # CRITICAL: Always disable
+
+# WRONG: Leaving COPR enabled
+dnf5 -y copr enable username/repo-name
+dnf5 -y install package-name
+# Missing disable - this is WRONG
+```
+
+**This consistency ensures compatibility with Universal Blue ecosystem and prevents issues.**
+
 ## Overview
 This repository is a Universal Blue bootc image template for creating custom Linux operating systems. When users ask for customizations, follow this guide to make efficient, correct decisions without exploring multiple options.
 
