@@ -24,19 +24,19 @@ dnf5 install -y tmux
 systemctl enable podman.socket
 
 ### Copy Brewfiles
-# Copy all Brewfiles from /brew to /usr/share/ublue-os/homebrew/
+# Copy all Brewfiles from /custom/brew to /usr/share/ublue-os/homebrew/
 # These will be available for users to install packages via Homebrew/Brew
 mkdir -p /usr/share/ublue-os/homebrew/
-cp /ctx/brew/*.Brewfile /usr/share/ublue-os/homebrew/
+cp /ctx/custom/brew/*.Brewfile /usr/share/ublue-os/homebrew/
 
 ### Copy Flatpak preinstall files
 # Copy .preinstall files to /etc/flatpak/preinstall.d/
 # These will be automatically installed on first boot
 mkdir -p /etc/flatpak/preinstall.d/
-cp /ctx/flatpaks/*.preinstall /etc/flatpak/preinstall.d/
+cp /ctx/custom/flatpaks/*.preinstall /etc/flatpak/preinstall.d/
 
 ### Setup ujust
-# Consolidate just files from /ujust directory into system location
+# Consolidate just files from /custom/ujust directory into system location
 # Find all .just files and concatenate them into a single file for ujust
 mkdir -p /usr/share/ublue-os/just
-find /ctx/ujust -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
+find /ctx/custom/ujust -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just

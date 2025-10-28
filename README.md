@@ -191,7 +191,7 @@ After switching to your custom image, install packages from a Brewfile:
 brew bundle --file=/usr/share/ublue-os/homebrew/default.Brewfile
 ```
 
-For more details, see the [brew directory README](/brew/README.md).
+For more details, see the [brew directory README](/custom/brew/README.md).
 
 ### Other Customizations
 

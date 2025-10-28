@@ -388,7 +388,7 @@ cosign.key  # Must be present
 → Edit `build_files/build.sh`, add COPR enable → install → CRITICAL: COPR disable
 
 ### "I want to add ujust commands for users"
-→ Create `.just` files in `ujust/` directory with commands like system config, Brewfile shortcuts. **NEVER** install packages via dnf5 in ujust - use Brewfile shortcuts instead
+→ Create `.just` files in `custom/ujust/` directory with commands like system config, Brewfile shortcuts. **NEVER** install packages via dnf5 in ujust - use Brewfile shortcuts instead
 
 ### "The build is failing"
 → Check: 1) SIGNING_SECRET exists, 2) base image syntax correct, 3) package names correct, 4) COPRs disabled after use

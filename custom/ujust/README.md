@@ -17,7 +17,7 @@ This directory contains Just recipe files that will be installed into your custo
 Create `.just` files in this directory with your custom commands:
 
 ```
-ujust/
+custom/ujust/
 ├── README.md          # This file
 ├── custom-apps.just   # Application installation commands
 └── custom-system.just # System configuration commands
@@ -167,8 +167,8 @@ Test locally before committing:
 
 Or test the just files directly:
 ```bash
-just --justfile ujust/custom-apps.just --list
-just --justfile ujust/custom-apps.just install-something
+just --justfile custom/ujust/custom-apps.just --list
+just --justfile custom/ujust/custom-apps.just install-something
 ```
 
 ## Groups for Organization
