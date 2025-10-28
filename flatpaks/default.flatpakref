@@ -1,50 +1,114 @@
 # Default Flatpak applications
 # These will be installed on first boot
-# Format: type/app-id[/arch/branch]
+# Format: INI file with [Flatpak Preinstall NAME] groups
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 
 # Web Browsers
-app/org.mozilla.firefox
-app/org.mozilla.Thunderbird
+[Flatpak Preinstall org.mozilla.firefox]
+Branch=stable
+
+[Flatpak Preinstall org.mozilla.Thunderbird]
+Branch=stable
 
 # GNOME Core Applications
-app/org.gnome.Calculator
-app/org.gnome.Calendar
-app/org.gnome.Characters
-app/org.gnome.Connections
-app/org.gnome.Contacts
-app/org.gnome.DejaDup
-app/org.gnome.FileRoller
-app/org.gnome.Firmware
-app/org.gnome.Logs
-app/org.gnome.Loupe
-app/org.gnome.Maps
-app/org.gnome.NautilusPreviewer
-app/org.gnome.Papers
-app/org.gnome.SimpleScan
-app/org.gnome.TextEditor
-app/org.gnome.Weather
-app/org.gnome.baobab
-app/org.gnome.clocks
-app/org.gnome.font-viewer
+[Flatpak Preinstall org.gnome.Calculator]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Calendar]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Characters]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Connections]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Contacts]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.DejaDup]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.FileRoller]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Firmware]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Logs]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Loupe]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Maps]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.NautilusPreviewer]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Papers]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.SimpleScan]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.TextEditor]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Weather]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.baobab]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.clocks]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.font-viewer]
+Branch=stable
 
 # Graphics & Media
-app/com.github.PintaProject.Pinta
-app/com.github.rafostar.Clapper
+[Flatpak Preinstall com.github.PintaProject.Pinta]
+Branch=stable
+
+[Flatpak Preinstall com.github.rafostar.Clapper]
+Branch=stable
 
 # System Utilities
-app/com.github.tchx84.Flatseal
-app/com.mattjakeman.ExtensionManager
-app/io.github.flattool.Warehouse
-app/io.github.flattool.Ignition
-app/io.missioncenter.MissionCenter
-app/io.gitlab.adhami3310.Impression
+[Flatpak Preinstall com.github.tchx84.Flatseal]
+Branch=stable
+
+[Flatpak Preinstall com.mattjakeman.ExtensionManager]
+Branch=stable
+
+[Flatpak Preinstall io.github.flattool.Warehouse]
+Branch=stable
+
+[Flatpak Preinstall io.github.flattool.Ignition]
+Branch=stable
+
+[Flatpak Preinstall io.missioncenter.MissionCenter]
+Branch=stable
+
+[Flatpak Preinstall io.gitlab.adhami3310.Impression]
+Branch=stable
 
 # Universal Blue Specific
-app/com.ranfdev.DistroShelf
-app/io.github.kolunmi.Bazaar
-app/page.tesk.Refine
+[Flatpak Preinstall com.ranfdev.DistroShelf]
+Branch=stable
 
-# GTK Themes
-runtime/org.gtk.Gtk3theme.adw-gtk3
-runtime/org.gtk.Gtk3theme.adw-gtk3-dark
+[Flatpak Preinstall io.github.kolunmi.Bazaar]
+Branch=stable
+
+[Flatpak Preinstall page.tesk.Refine]
+Branch=stable
+
+# GTK Themes (runtimes)
+[Flatpak Preinstall org.gtk.Gtk3theme.adw-gtk3]
+Branch=stable
+IsRuntime=true
+
+[Flatpak Preinstall org.gtk.Gtk3theme.adw-gtk3-dark]
+Branch=stable
+IsRuntime=true

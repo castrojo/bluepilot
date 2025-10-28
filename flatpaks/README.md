@@ -14,19 +14,21 @@ Flatpak preinstall is a feature that allows system administrators to define Flat
 
 ## File Format
 
-Each file should contain one Flatpak reference per line in the format:
+Each file uses the INI format with `[Flatpak Preinstall NAME]` sections:
 
-```
-app/org.mozilla.firefox
-app/org.gnome.Calculator
-runtime/org.gtk.Gtk3theme.adw-gtk3
+```ini
+[Flatpak Preinstall org.mozilla.firefox]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Calculator]
+Branch=stable
 ```
 
-Format specification: `type/app-id[/arch/branch]`
-- `type`: Either `app` or `runtime`
-- `app-id`: The Flatpak application ID
-- `arch`: Optional architecture (defaults to system architecture)
-- `branch`: Optional branch (defaults to stable)
+**Keys:**
+- `Install` - (boolean) Whether to install (default: true)
+- `Branch` - (string) Branch name (default: "master", commonly "stable")
+- `IsRuntime` - (boolean) Whether this is a runtime (default: false for apps)
+- `CollectionID` - (string) Collection ID of the remote, if any
 
 See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 

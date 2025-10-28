@@ -1,14 +1,24 @@
 # Development-focused Flatpak applications
 # These are additional tools for developers
-# Format: type/app-id[/arch/branch]
+# Format: INI file with [Flatpak Preinstall NAME] groups
 # See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
 
 # Development Tools
-app/de.leopoldluley.Clapgrep
-app/io.github.getnf.embellish
-app/io.github.ronniedroid.concessio
-app/me.iepure.devtoolbox
+[Flatpak Preinstall de.leopoldluley.Clapgrep]
+Branch=stable
+
+[Flatpak Preinstall io.github.getnf.embellish]
+Branch=stable
+
+[Flatpak Preinstall io.github.ronniedroid.concessio]
+Branch=stable
+
+[Flatpak Preinstall me.iepure.devtoolbox]
+Branch=stable
 
 # Container & Virtualization
-app/io.podman_desktop.PodmanDesktop
-app/sh.loft.devpod
+[Flatpak Preinstall io.podman_desktop.PodmanDesktop]
+Branch=stable
+
+[Flatpak Preinstall sh.loft.devpod]
+Branch=stable
