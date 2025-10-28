@@ -14,12 +14,17 @@ This repository is a Universal Blue bootc image template for creating custom Lin
 ├── build_files/
 │   └── build.sh              # Script for installing packages and system modifications
 ├── disk_config/
-│   ├── disk.toml             # Configuration for QCOW2/RAW disk images
-│   ├── iso-gnome.toml        # ISO configuration for GNOME desktop
-│   └── iso-kde.toml          # ISO configuration for KDE desktop
+│   ├── disk.toml             # Configuration for QCOW2/RAW disk images (local testing)
+│   └── iso.toml              # ISO configuration for Anaconda installer (local testing)
+├── rclone/
+│   ├── README.md             # rclone configuration guide
+│   ├── cloudflare-r2.conf    # Cloudflare R2 example config
+│   ├── aws-s3.conf           # AWS S3 example config
+│   ├── backblaze-b2.conf     # Backblaze B2 example config
+│   ├── sftp.conf             # SFTP upload example config
+│   └── scp.conf              # SCP upload example config
 └── .github/workflows/
-    ├── build.yml             # CI/CD for building and publishing container images
-    └── build-disk.yml        # CI/CD for building disk images (ISO, QCOW2, etc.)
+    └── build.yml             # CI/CD for building and publishing container images
 ```
 
 ## Core Customization Workflows

@@ -1,0 +1,31 @@
+# Anaconda ISO Installer Configuration
+# This configuration creates a bootable ISO image for installing your custom bootc image.
+#
+# The installer will guide users through disk partitioning and basic system setup,
+# then automatically switch to your custom image on first boot.
+
+[customizations.installer.kickstart]
+contents = """
+%post
+# After installation, switch to the custom image from this repository
+# This URL will be automatically updated to match your repository
+bootc switch --mutate-in-place --transport registry ghcr.io/castrojo/bluepilot:latest
+%end
+"""
+
+[customizations.installer.modules]
+# Enable standard Anaconda installer modules for a guided installation experience
+enable = [
+  "org.fedoraproject.Anaconda.Modules.Storage",    # Disk partitioning and formatting
+  "org.fedoraproject.Anaconda.Modules.Runtime",    # Basic runtime configuration  
+  "org.fedoraproject.Anaconda.Modules.Network",    # Network configuration
+  "org.fedoraproject.Anaconda.Modules.Security",   # Security settings
+  "org.fedoraproject.Anaconda.Modules.Services",   # System services
+  "org.fedoraproject.Anaconda.Modules.Users",      # User account creation
+  "org.fedoraproject.Anaconda.Modules.Timezone"    # Timezone selection
+]
+
+# Disable subscription management (not needed for community images)
+disable = [
+  "org.fedoraproject.Anaconda.Modules.Subscription",
+]

@@ -183,7 +183,6 @@ From your bootc system, run the following command substituting in your Github us
 sudo bootc switch ghcr.io/<username>/<image_name>
 ```
 This should queue your image for the next reboot, which you can do immediately after the command finishes. You have officially set up your custom image! See the following section for an explanation of the important parts of the template for customization.
-h the Github repository name. There are several environment variables at the start of the workflow which may be of interest to change.
 
 ## renovate.json5
 
