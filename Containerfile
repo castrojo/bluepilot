@@ -3,6 +3,23 @@ FROM scratch AS ctx
 COPY build /
 COPY custom /custom
 
+###############################################################################
+# PROJECT NAME CONFIGURATION
+###############################################################################
+# Name: finpilot
+#
+# IMPORTANT: Change "finpilot" above to your desired project name.
+# This name should be used consistently throughout the repository in:
+#   - Justfile: export image_name := env("IMAGE_NAME", "your-name-here")
+#   - README.md: # your-name-here (title)
+#   - artifacthub-repo.yml: repositoryID: your-name-here
+#   - custom/ujust/README.md: localhost/your-name-here:latest (in bootc switch example)
+#
+# The project name defined here is the single source of truth for your
+# custom image's identity. When changing it, update all references above
+# to maintain consistency.
+###############################################################################
+
 # Base Image
 FROM ghcr.io/ublue-os/bluefin:stable@sha256:c9411d9909708d57d8e87c160a308a4a8c795764fb4beff344340755412b9178
 

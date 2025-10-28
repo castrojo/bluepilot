@@ -138,17 +138,43 @@ chmod +x /usr/local/bin/binary
 
 **When**: User wants to customize the repository/image name.
 
-**Where**: Edit `Justfile` (line 1)
-
-**How**: Change the `image_name` variable:
-```just
-export image_name := env("IMAGE_NAME", "my-custom-image")
+**Where**: The project name is defined in the `Containerfile` comment section (line 9):
+```dockerfile
+# Name: finpilot
 ```
 
-**Additional Changes Required**:
-- The GitHub Actions workflow automatically uses repository name
+**Critical**: This is the **single source of truth** for the project name. All other references must match this name.
+
+**Files that must be updated when changing the project name:**
+1. **Containerfile** (line 9): `# Name: your-new-name`
+2. **Justfile** (line 1): `export image_name := env("IMAGE_NAME", "your-new-name")`
+3. **README.md** (line 1): `# your-new-name`
+4. **artifacthub-repo.yml** (line 5): `repositoryID: your-new-name`
+5. **custom/ujust/README.md** (~line 175): `localhost/your-new-name:latest` (in bootc switch example)
+
+**How to Change**:
+```bash
+# 1. Update the Containerfile comment (line 9)
+# Name: my-awesome-image
+
+# 2. Update Justfile
+export image_name := env("IMAGE_NAME", "my-awesome-image")
+
+# 3. Update README.md title
+# my-awesome-image
+
+# 4. Update artifacthub-repo.yml
+repositoryID: my-awesome-image
+
+# 5. Update custom/ujust/README.md
+sudo bootc switch --target localhost/my-awesome-image:latest
+```
+
+**Additional Notes**:
+- The GitHub Actions workflow automatically uses repository name via `${{ github.event.repository.name }}`
 - If user wants different CI/CD name, edit `.github/workflows/build.yml` env var `IMAGE_NAME`
-- No need to change unless they want image name different from repo name
+- The Containerfile comment serves as documentation for where the name is used
+- Always keep all 5 files synchronized with the same name
 
 ### 4. CONFIGURING DISK IMAGE BUILDS (LOCAL TESTING ONLY)
 
