@@ -32,7 +32,71 @@ Select `Use this Template` on this page. You can set the name and description of
 Once you have finished copying the template, you need to enable the Github Actions workflows for your new repository.
 To enable the workflows, go to the `Actions` tab of the new repository and click the button to enable workflows.
 
-### Step 1b: Cloning the New Repository
+### Step 1b: Enabling Renovate (Recommended)
+
+[Renovate](https://docs.renovatebot.com/) is a dependency update tool that will automatically keep your base image and other dependencies up to date. This template includes a pre-configured Renovate setup that will:
+
+- Monitor your base image (defined in the `Containerfile`) for updates
+- Automatically merge digest updates to keep your image secure
+- Create pull requests for version updates
+- Track the bootc-image-builder and other tools in the `Justfile`
+
+#### Option 1: Using the Renovate GitHub App (Recommended)
+
+1. Go to the [Renovate GitHub App](https://github.com/apps/renovate) page
+2. Click "Install" or "Configure" if you've already installed it
+3. Select the repositories where you want to enable Renovate (or select "All repositories")
+4. Renovate will automatically detect the `.github/renovate.json5` configuration and start monitoring your dependencies
+
+#### Option 2: Using Renovate with GitHub Actions
+
+If you prefer not to use the GitHub App, you can run Renovate as a GitHub Action:
+
+1. Create a Personal Access Token (PAT) with `repo` scope
+2. Add it as a repository secret named `RENOVATE_TOKEN`
+3. Create a workflow file `.github/workflows/renovate.yml`:
+
+```yaml
+name: Renovate
+on:
+  schedule:
+    - cron: '0 * * * *'  # Run every hour
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v40
+        with:
+          token: ${{ secrets.RENOVATE_TOKEN }}
+```
+
+#### What Renovate Monitors
+
+With the included configuration, Renovate will automatically track:
+
+- **Base Image**: The `FROM` statement in your `Containerfile` (e.g., `ghcr.io/ublue-os/bazzite:stable`)
+- **Bootc Image Builder**: The `bib_image` variable in the `Justfile`
+- **GitHub Actions**: Workflow dependencies in `.github/workflows/`
+
+When you change your base image in the `Containerfile`, Renovate will automatically start tracking the new image - no configuration changes needed!
+
+#### Automerge Behavior
+
+Renovate is configured to automatically merge:
+- Digest updates (security patches) for your base image
+- Pin updates across all dependencies
+
+Manual review is required for:
+- Version updates (e.g., `stable` → `latest`)
+- Updates to build tools like `bootc-image-builder` that may require testing
+
+### Step 1c: Cloning the New Repository
 
 Here I will defer to the much superior GitHub documentation on the matter. You can use whichever method is easiest.
 [GitHub Documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
@@ -119,3 +183,14 @@ From your bootc system, run the following command substituting in your Github us
 sudo bootc switch ghcr.io/<username>/<image_name>
 ```
 This should queue your image for the next reboot, which you can do immediately after the command finishes. You have officially set up your custom image! See the following section for an explanation of the important parts of the template for customization.
+h the Github repository name. There are several environment variables at the start of the workflow which may be of interest to change.
+
+## renovate.json5
+
+The [renovate.json5](./.github/renovate.json5) file configures [Renovate](https://docs.renovatebot.com/) to automatically keep your dependencies up to date. The configuration includes:
+
+- **Custom Managers**: Regex patterns to detect Docker images in the `Justfile` with digest pins
+- **Automerge Rules**: Automatically merges digest updates for your base image and dependencies
+- **Package Rules**: Specific rules for different types of updates and packages
+
+The configuration is designed to automatically track whatever base image you choose in the `Containerfile`. When you change your base image, Renovate will automatically start monitoring the new image without requiring any configuration changes.
