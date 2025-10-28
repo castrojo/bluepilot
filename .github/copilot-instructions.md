@@ -93,7 +93,7 @@ FROM ghcr.io/ublue-os/bazzite:stable
 
 **When**: User wants to install system packages, enable services, or modify the OS.
 
-**Where**: Edit `build/build.sh`
+**Where**: Edit `build/10-build.sh`
 
 **How**: Add commands to the script. The script runs with DNF5 (Fedora's package manager).
 
@@ -265,7 +265,7 @@ Or via ujust shortcuts: `ujust install-default-apps`
 
 **Decision Logic**:
 - Brewfiles are for **runtime** package installation, not build-time
-- Build-time packages go in `build/build.sh`
+- Build-time packages go in `build/10-build.sh`
 - Create ujust shortcuts in `custom/ujust/custom-apps.just` for easy installation
 - Brewfiles are copied to `/usr/share/ublue-os/homebrew/` during build
 
@@ -295,7 +295,7 @@ install-dev-tools:
 
 **Decision Logic**:
 - ujust commands are for **runtime** user convenience
-- Build-time operations go in `build/build.sh`
+- Build-time operations go in `build/10-build.sh`
 - Create shortcuts to Brewfiles, not direct package installs
 - Use `[group('Category')]` to organize commands
 
@@ -513,7 +513,7 @@ cosign.key  # Must be present
 ## Common User Request Patterns
 
 ### "I want to add X package"
-→ Edit `build/build.sh`, add `dnf5 install -y package-name`
+→ Edit `build/10-build.sh`, add `dnf5 install -y package-name`
 
 ### "I want to switch to Bluefin/Bazzite/Aurora"
 → Edit `Containerfile` FROM line with appropriate base image
@@ -528,10 +528,10 @@ cosign.key  # Must be present
 → After GitHub Actions builds successfully: `sudo bootc switch ghcr.io/username/repo:latest` then reboot
 
 ### "I want to enable/disable a systemd service"
-→ Edit `build/build.sh`, add `systemctl enable/mask service-name`
+→ Edit `build/10-build.sh`, add `systemctl enable/mask service-name`
 
 ### "I need to install from a COPR"
-→ Edit `build/build.sh`, add COPR enable → install → CRITICAL: COPR disable
+→ Edit `build/10-build.sh`, add COPR enable → install → CRITICAL: COPR disable
 
 ### "I want to add ujust commands for users"
 → Create `.just` files in `custom/ujust/` directory with commands like system config, Brewfile shortcuts. **NEVER** install packages via dnf5 in ujust - use Brewfile shortcuts instead
@@ -594,7 +594,7 @@ Users should reference `latest` tag unless they need pinned versions.
 
 When user requests customization, modify in this order:
 
-1. **build/build.sh** - 50% of requests (build-time packages, services, configs)
+1. **build/10-build.sh** - 50% of requests (build-time packages, services, configs)
 2. **custom/brew/** - 20% (runtime package installation via Brewfiles)
 3. **custom/ujust/** - 15% (user-facing commands and shortcuts)
 4. **custom/flatpaks/** - 5% (GUI application preinstall)
@@ -636,7 +636,7 @@ Currently templates default to amd64 (x86_64). For arm64:
 
 | User Need | File(s) to Edit | Test Command |
 |-----------|----------------|--------------|
-| Add build-time packages | build/build.sh | `just build` |
+| Add build-time packages | build/10-build.sh | `just build` |
 | Add runtime packages | custom/brew/*.Brewfile | `just build` + `ujust install-*` |
 | Add user commands | custom/ujust/*.just | `ujust` |
 | Add GUI apps (first boot) | custom/flatpaks/*.preinstall | Boot test |
@@ -644,7 +644,7 @@ Currently templates default to amd64 (x86_64). For arm64:
 | Rename image | Justfile | `just build` |
 | Customize ISO | iso/iso.toml | `just build-iso` |
 | Change VM size | iso/disk.toml | `just build-qcow2` |
-| Enable services | build/build.sh | `just build-qcow2` |
+| Enable services | build/10-build.sh | `just build-qcow2` |
 | Add metadata | build.yml | Push to GitHub |
 | Upload images | rclone configs + manual upload | Local + rclone |
 
