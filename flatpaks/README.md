@@ -70,9 +70,11 @@ You can create additional `.preinstall` files for different categories (developm
 - Files must use the `.preinstall` extension
 - Comments can be added with `#`
 - Empty lines are ignored
-- Applications install from Flathub by default
-- Installation happens automatically on first boot
+- **Flatpaks are downloaded from Flathub on first boot** - not embedded in the image
+- **Internet connection required** after installation for Flatpaks to install
+- Installation happens automatically after user setup completes
 - Users can still uninstall these applications if desired
+- First boot will take longer while Flatpaks are being installed
 
 ## Customization
 
