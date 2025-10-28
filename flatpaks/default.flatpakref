@@ -1,0 +1,50 @@
+# Default Flatpak applications
+# These will be installed on first boot
+# Format: type/app-id[/arch/branch]
+# See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
+
+# Web Browsers
+app/org.mozilla.firefox
+app/org.mozilla.Thunderbird
+
+# GNOME Core Applications
+app/org.gnome.Calculator
+app/org.gnome.Calendar
+app/org.gnome.Characters
+app/org.gnome.Connections
+app/org.gnome.Contacts
+app/org.gnome.DejaDup
+app/org.gnome.FileRoller
+app/org.gnome.Firmware
+app/org.gnome.Logs
+app/org.gnome.Loupe
+app/org.gnome.Maps
+app/org.gnome.NautilusPreviewer
+app/org.gnome.Papers
+app/org.gnome.SimpleScan
+app/org.gnome.TextEditor
+app/org.gnome.Weather
+app/org.gnome.baobab
+app/org.gnome.clocks
+app/org.gnome.font-viewer
+
+# Graphics & Media
+app/com.github.PintaProject.Pinta
+app/com.github.rafostar.Clapper
+
+# System Utilities
+app/com.github.tchx84.Flatseal
+app/com.mattjakeman.ExtensionManager
+app/io.github.flattool.Warehouse
+app/io.github.flattool.Ignition
+app/io.missioncenter.MissionCenter
+app/io.gitlab.adhami3310.Impression
+
+# Universal Blue Specific
+app/com.ranfdev.DistroShelf
+app/io.github.kolunmi.Bazaar
+app/page.tesk.Refine
+
+# GTK Themes
+runtime/org.gtk.Gtk3theme.adw-gtk3
+runtime/org.gtk.Gtk3theme.adw-gtk3-dark

@@ -29,6 +29,12 @@ systemctl enable podman.socket
 mkdir -p /usr/share/ublue-os/homebrew/
 cp /ctx/brew/*.Brewfile /usr/share/ublue-os/homebrew/
 
+### Copy Flatpak preinstall files
+# Copy flatpakref files to /etc/flatpak/preinstall.d/
+# These will be automatically installed on first boot
+mkdir -p /etc/flatpak/preinstall.d/
+cp /ctx/flatpaks/*.flatpakref /etc/flatpak/preinstall.d/
+
 ### Setup ujust
 # Consolidate just files from /ujust directory into system location
 # Find all .just files and concatenate them into a single file for ujust

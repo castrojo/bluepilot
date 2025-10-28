@@ -1,0 +1,14 @@
+# Development-focused Flatpak applications
+# These are additional tools for developers
+# Format: type/app-id[/arch/branch]
+# See: https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall
+
+# Development Tools
+app/de.leopoldluley.Clapgrep
+app/io.github.getnf.embellish
+app/io.github.ronniedroid.concessio
+app/me.iepure.devtoolbox
+
+# Container & Virtualization
+app/io.podman_desktop.PodmanDesktop
+app/sh.loft.devpod
