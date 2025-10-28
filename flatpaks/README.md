@@ -9,8 +9,21 @@ Flatpak preinstall is a feature that allows system administrators to define Flat
 ## How It Works
 
 1. **During Build**: Files in this directory are copied to `/etc/flatpak/preinstall.d/` in the image
-2. **On First Boot**: The system reads these files and installs the specified Flatpaks
-3. **User Experience**: Applications appear pre-installed without manual intervention
+2. **On First Boot**: After user setup completes, the system reads these files and installs the specified Flatpaks
+3. **User Experience**: Applications appear automatically after first login
+
+## Important: Installation Timing
+
+**Flatpaks are NOT included in the ISO or container image.** They are downloaded and installed after:
+- User completes initial system setup
+- Network connection is established
+- First boot process runs `flatpak preinstall`
+
+This means:
+- The ISO remains small and bootable offline
+- Users need an internet connection after installation
+- First boot may take longer while Flatpaks download and install
+- This is NOT an offline ISO with pre-embedded applications
 
 ## File Format
 
