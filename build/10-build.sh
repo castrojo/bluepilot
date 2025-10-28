@@ -1,42 +1,49 @@
-#!/bin/bash
+#!/usr/bin/bash
 
-set -ouex pipefail
+set -eoux pipefail
 
-### Install packages
+###############################################################################
+# Main Build Script
+###############################################################################
+# This script follows the @ublue-os/bluefin pattern for build scripts.
+# It uses set -eoux pipefail for strict error handling and debugging.
+###############################################################################
 
-# Packages can be installed from any enabled yum repo on the image.
-# RPMfusion repos are available by default in ublue main images
-# List of rpmfusion packages can be found here:
-# https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
+# Source helper functions
+source /ctx/build/copr-helpers.sh
 
-# this installs a package from fedora repos
-dnf5 install -y tmux 
+echo "::group:: Copy Custom Files"
 
-# Use a COPR Example:
-#
-# dnf5 -y copr enable ublue-os/staging
-# dnf5 -y install package
-# Disable COPRs so they don't end up enabled on the final image:
-# dnf5 -y copr disable ublue-os/staging
-
-#### Example for enabling a System Unit File
-
-systemctl enable podman.socket
-
-### Copy Brewfiles
-# Copy all Brewfiles from /custom/brew to /usr/share/ublue-os/homebrew/
-# These will be available for users to install packages via Homebrew/Brew
+# Copy Brewfiles to standard location
 mkdir -p /usr/share/ublue-os/homebrew/
 cp /ctx/custom/brew/*.Brewfile /usr/share/ublue-os/homebrew/
 
-### Copy Flatpak preinstall files
-# Copy .preinstall files to /etc/flatpak/preinstall.d/
-# These will be automatically installed on first boot
+# Consolidate Just Files
+mkdir -p /usr/share/ublue-os/just/
+find /ctx/custom/ujust -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
+
+# Copy Flatpak preinstall files
 mkdir -p /etc/flatpak/preinstall.d/
 cp /ctx/custom/flatpaks/*.preinstall /etc/flatpak/preinstall.d/
 
-### Setup ujust
-# Consolidate just files from /custom/ujust directory into system location
-# Find all .just files and concatenate them into a single file for ujust
-mkdir -p /usr/share/ublue-os/just
-find /ctx/custom/ujust -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
+echo "::endgroup::"
+
+echo "::group:: Install Packages"
+
+# Install packages using dnf5
+# Example: dnf5 install -y tmux
+
+# Example using COPR with isolated pattern:
+# copr_install_isolated "ublue-os/staging" package-name
+
+echo "::endgroup::"
+
+echo "::group:: System Configuration"
+
+# Enable/disable systemd services
+systemctl enable podman.socket
+# Example: systemctl mask unwanted-service
+
+echo "::endgroup::"
+
+echo "Custom build complete!"
