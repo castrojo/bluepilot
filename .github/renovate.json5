@@ -4,12 +4,36 @@
     "config:best-practices",
   ],
 
+  // Do not rebase when the default branch is updated
   "rebaseWhen": "never",
+
+  customManagers: [
+    {
+      customType: 'regex',
+      fileMatch: [
+        '^Justfile$',
+      ],
+      matchStrings: [
+        '(?<justName>.+?)\\s:=\\s(?:env\\(.+?,\\s)?["\'](?<packageName>\\S+?):(?<currentValue>\\S+?)@(?<currentDigest>sha256:[a-f0-9]+?)["\']\\)?',
+      ],
+      datasourceTemplate: 'docker',
+    },
+  ],
 
   "packageRules": [
     {
       "automerge": true,
       "matchUpdateTypes": ["pin", "pinDigest"]
+    },
+    {
+      "automerge": true,
+      "matchManagers": ["dockerfile"],
+      "matchUpdateTypes": ["digest"]
+    },
+    {
+      "matchUpdateTypes": ["pin", "digest", "pinDigest"],
+      "matchPackageNames": ["ghcr.io/jasonn3/build-container-installer", "ghcr.io/hhd-dev/rechunk"],
+      "automerge": false
     },
     {
       "enabled": false,
