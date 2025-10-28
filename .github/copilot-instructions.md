@@ -11,20 +11,30 @@ This repository is a Universal Blue bootc image template for creating custom Lin
 ├── Justfile                   # Build automation with recipes for local testing
 ├── README.md                  # User documentation
 ├── artifacthub-repo.yml       # Optional ArtifactHub metadata
-├── build_files/
+├── build/
 │   └── build.sh              # Script for installing packages and system modifications
-├── disk_config/
-│   ├── disk.toml             # Configuration for QCOW2/RAW disk images (local testing)
-│   └── iso.toml              # ISO configuration for Anaconda installer (local testing)
+├── custom/                    # User customization files
+│   ├── brew/                 # Homebrew Brewfiles for package installation
+│   │   ├── default.Brewfile
+│   │   ├── development.Brewfile
+│   │   └── fonts.Brewfile
+│   ├── flatpaks/             # Flatpak preinstall configurations
+│   │   └── default.preinstall
+│   └── ujust/                # User-facing just commands
+│       ├── custom-apps.just
+│       └── custom-system.just
+├── iso/                      # ISO and disk image configurations
+│   ├── disk.toml            # Configuration for QCOW2/RAW disk images (local testing)
+│   └── iso.toml             # ISO configuration for Anaconda installer (local testing)
 ├── rclone/
-│   ├── README.md             # rclone configuration guide
-│   ├── cloudflare-r2.conf    # Cloudflare R2 example config
-│   ├── aws-s3.conf           # AWS S3 example config
-│   ├── backblaze-b2.conf     # Backblaze B2 example config
-│   ├── sftp.conf             # SFTP upload example config
-│   └── scp.conf              # SCP upload example config
+│   ├── README.md            # rclone configuration guide
+│   ├── cloudflare-r2.conf   # Cloudflare R2 example config
+│   ├── aws-s3.conf          # AWS S3 example config
+│   ├── backblaze-b2.conf    # Backblaze B2 example config
+│   ├── sftp.conf            # SFTP upload example config
+│   └── scp.conf             # SCP upload example config
 └── .github/workflows/
-    └── build.yml             # CI/CD for building and publishing container images
+    └── build.yml            # CI/CD for building and publishing container images
 ```
 
 ## Core Customization Workflows
@@ -66,7 +76,7 @@ FROM ghcr.io/ublue-os/bazzite:stable
 
 **When**: User wants to install system packages, enable services, or modify the OS.
 
-**Where**: Edit `build_files/build.sh`
+**Where**: Edit `build/build.sh`
 
 **How**: Add commands to the script. The script runs with DNF5 (Fedora's package manager).
 
@@ -144,7 +154,7 @@ export image_name := env("IMAGE_NAME", "my-custom-image")
 
 **When**: User wants to customize ISO or VM disk images for local testing.
 
-**Where**: Edit files in `disk_config/` directory
+**Where**: Edit files in `iso/` directory
 
 **Important**: This template no longer includes automated ISO/disk building workflows. 
 Disk images are built locally using the `just` commands for testing purposes only.
@@ -153,8 +163,8 @@ Disk images are built locally using the `just` commands for testing purposes onl
 
 | Use Case | File to Edit | Just Command |
 |----------|--------------|--------------|
-| VM images (QCOW2, RAW) | `disk_config/disk.toml` | `just build-qcow2` |
-| ISO installer | `disk_config/iso.toml` | `just build-iso` |
+| VM images (QCOW2, RAW) | `iso/disk.toml` | `just build-qcow2` |
+| ISO installer | `iso/iso.toml` | `just build-iso` |
 
 **disk.toml Configuration**:
 ```toml
@@ -184,7 +194,100 @@ bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:latest
 - Use `iso.toml` for creating bootable installation media
 - Both are for local testing only - no automated builds in CI/CD
 
-### 5. CUSTOMIZING BUILD METADATA
+### 5. HOMEBREW/BREWFILE INTEGRATION
+
+**When**: User wants to provide runtime package installation options for users.
+
+**Where**: Edit files in `custom/brew/` directory
+
+**How**: Add packages to Brewfiles using Ruby syntax:
+```ruby
+# Add a tap (third-party repository)
+tap "homebrew/cask"
+
+# Install a formula (CLI tool)
+brew "bat"
+brew "eza"
+brew "ripgrep"
+```
+
+**Example Files**:
+- `custom/brew/default.Brewfile` - Essential command-line tools
+- `custom/brew/development.Brewfile` - Development tools
+- `custom/brew/fonts.Brewfile` - Programming fonts
+
+**User Installation**:
+Users install via: `brew bundle --file /usr/share/ublue-os/homebrew/default.Brewfile`
+Or via ujust shortcuts: `ujust install-default-apps`
+
+**Decision Logic**:
+- Brewfiles are for **runtime** package installation, not build-time
+- Build-time packages go in `build/build.sh`
+- Create ujust shortcuts in `custom/ujust/custom-apps.just` for easy installation
+- Brewfiles are copied to `/usr/share/ublue-os/homebrew/` during build
+
+### 6. UJUST COMMAND SYSTEM
+
+**When**: User wants to provide convenient commands for end users.
+
+**Where**: Edit or create `.just` files in `custom/ujust/` directory
+
+**How**: Create just recipes with user-friendly commands:
+```just
+# Install development tools via Brewfile
+[group('Apps')]
+install-dev-tools:
+    brew bundle --file /usr/share/ublue-os/homebrew/development.Brewfile
+```
+
+**Example Files**:
+- `custom/ujust/custom-apps.just` - Application installation commands
+- `custom/ujust/custom-system.just` - System configuration commands
+
+**Important Rules**:
+- **NEVER** install packages via `dnf5` in ujust commands
+- Use Brewfile shortcuts for package installation
+- Use Flatpak for GUI applications
+- All `.just` files are automatically consolidated during build
+
+**Decision Logic**:
+- ujust commands are for **runtime** user convenience
+- Build-time operations go in `build/build.sh`
+- Create shortcuts to Brewfiles, not direct package installs
+- Use `[group('Category')]` to organize commands
+
+### 7. FLATPAK PREINSTALL SYSTEM
+
+**When**: User wants to pre-define Flatpak applications for first boot installation.
+
+**Where**: Edit or create `.preinstall` files in `custom/flatpaks/` directory
+
+**How**: Use INI format with Flatpak Preinstall sections:
+```ini
+[Flatpak Preinstall org.mozilla.firefox]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Calculator]
+Branch=stable
+```
+
+**Example Files**:
+- `custom/flatpaks/default.preinstall` - Core applications from Bluefin
+
+**Important Notes**:
+- Flatpaks are **NOT** included in the ISO or container image
+- They are **downloaded and installed on first boot** after user setup
+- Requires internet connection
+- Files are copied to `/etc/flatpak/preinstall.d/` during build
+- Users can uninstall after installation if desired
+
+**Decision Logic**:
+- Use for GUI applications users will want
+- Not for offline ISOs - requires network
+- First boot will take longer while downloading
+- Find Flatpak IDs at https://flathub.org/
+
+### 8. CUSTOMIZING BUILD METADATA
 
 **When**: User wants to customize image description, keywords, or branding.
 
@@ -206,7 +309,7 @@ owners:
     email: user@example.com
 ```
 
-### 6. ADVANCED CONTAINERFILE MODIFICATIONS
+### 9. ADVANCED CONTAINERFILE MODIFICATIONS
 
 **When**: User needs advanced customization beyond build.sh.
 
@@ -244,7 +347,7 @@ Files in `build_files/` are available at `/ctx/` during build.
   - Multi-stage builds
   - Advanced caching strategies
 
-### 7. LOCAL TESTING WORKFLOW
+### 10. LOCAL TESTING WORKFLOW
 
 **When**: User wants to test changes before pushing to GitHub.
 
@@ -284,7 +387,7 @@ just build-iso
 - Use `just build-qcow2` to test full boot process
 - Use `just run-vm-qcow2` to test in actual VM environment
 
-### 8. GITHUB ACTIONS WORKFLOWS
+### 11. GITHUB ACTIONS WORKFLOWS
 
 **When**: User asks about CI/CD, automated builds, or publishing.
 
@@ -306,7 +409,7 @@ just build-iso
 - For faster builds, consider enabling rechunk (commented in build.yml)
 - Disk/ISO images are for local testing and manual distribution only
 
-### 9. RCLONE CONFIGURATION FOR MANUAL UPLOADS
+### 12. RCLONE CONFIGURATION FOR MANUAL UPLOADS
 
 **When**: User wants to upload locally-built ISOs/disk images to cloud storage.
 
@@ -332,7 +435,7 @@ just build-iso
 - Backblaze B2 for cost-effective storage
 - SFTP/SCP for your own server infrastructure
 
-### 10. SECURITY: COSIGN SIGNING
+### 13. SECURITY: COSIGN SIGNING
 
 **When**: Setting up new repository from template.
 
@@ -367,7 +470,7 @@ cosign.key  # Must be present
 ## Common User Request Patterns
 
 ### "I want to add X package"
-→ Edit `build_files/build.sh`, add `dnf5 install -y package-name`
+→ Edit `build/build.sh`, add `dnf5 install -y package-name`
 
 ### "I want to switch to Bluefin/Bazzite/Aurora"
 → Edit `Containerfile` FROM line with appropriate base image
@@ -376,16 +479,16 @@ cosign.key  # Must be present
 → Use `just build` then `just build-qcow2` then `just run-vm-qcow2`
 
 ### "I want to create an ISO"
-→ Edit `disk_config/iso.toml` to update bootc switch URL to your repository, then run `just build-iso` locally for testing
+→ Edit `iso/iso.toml` to update bootc switch URL to your repository, then run `just build-iso` locally for testing
 
 ### "How do I deploy this to my machine?"
 → After GitHub Actions builds successfully: `sudo bootc switch ghcr.io/username/repo:latest` then reboot
 
 ### "I want to enable/disable a systemd service"
-→ Edit `build_files/build.sh`, add `systemctl enable/mask service-name`
+→ Edit `build/build.sh`, add `systemctl enable/mask service-name`
 
 ### "I need to install from a COPR"
-→ Edit `build_files/build.sh`, add COPR enable → install → CRITICAL: COPR disable
+→ Edit `build/build.sh`, add COPR enable → install → CRITICAL: COPR disable
 
 ### "I want to add ujust commands for users"
 → Create `.just` files in `custom/ujust/` directory with commands like system config, Brewfile shortcuts. **NEVER** install packages via dnf5 in ujust - use Brewfile shortcuts instead
@@ -448,11 +551,14 @@ Users should reference `latest` tag unless they need pinned versions.
 
 When user requests customization, modify in this order:
 
-1. **build.sh** - 80% of requests (packages, services, configs)
-2. **Containerfile** - 10% (base image, /opt immutability)
-3. **Justfile** - 5% (image name, build parameters)
-4. **disk_config/*.toml** - 3% (ISO/disk image customization)
-5. **build.yml** - 2% (metadata, workflow triggers)
+1. **build/build.sh** - 50% of requests (build-time packages, services, configs)
+2. **custom/brew/** - 20% (runtime package installation via Brewfiles)
+3. **custom/ujust/** - 15% (user-facing commands and shortcuts)
+4. **custom/flatpaks/** - 5% (GUI application preinstall)
+5. **Containerfile** - 5% (base image, /opt immutability)
+6. **Justfile** - 2% (image name, build parameters)
+7. **iso/*.toml** - 2% (ISO/disk image customization)
+8. **build.yml** - 1% (metadata, workflow triggers)
 
 ## Performance Optimization Notes
 
@@ -487,12 +593,15 @@ Currently templates default to amd64 (x86_64). For arm64:
 
 | User Need | File(s) to Edit | Test Command |
 |-----------|----------------|--------------|
-| Add packages | build.sh | `just build` |
+| Add build-time packages | build/build.sh | `just build` |
+| Add runtime packages | custom/brew/*.Brewfile | `just build` + `ujust install-*` |
+| Add user commands | custom/ujust/*.just | `ujust` |
+| Add GUI apps (first boot) | custom/flatpaks/*.preinstall | Boot test |
 | Change base | Containerfile | `just build` |
 | Rename image | Justfile | `just build` |
-| Customize ISO | disk_config/iso.toml | `just build-iso` |
-| Change VM size | disk_config/disk.toml | `just build-qcow2` |
-| Enable services | build.sh | `just build-qcow2` |
+| Customize ISO | iso/iso.toml | `just build-iso` |
+| Change VM size | iso/disk.toml | `just build-qcow2` |
+| Enable services | build/build.sh | `just build-qcow2` |
 | Add metadata | build.yml | Push to GitHub |
 | Upload images | rclone configs + manual upload | Local + rclone |
 

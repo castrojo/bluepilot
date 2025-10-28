@@ -171,30 +171,65 @@ The configuration is designed to automatically track whatever base image you cho
 
 ## Customization
 
-### Brew (Homebrew) Support
+Your customizations are organized in dedicated directories for easy management:
 
-This template includes support for [Homebrew](https://brew.sh/) package management. The `/brew` directory contains Brewfiles that will be included in your custom image and made available to users.
+### Runtime Package Management (`custom/brew/`)
+
+This template includes [Homebrew](https://brew.sh/) Brewfiles for user package installation:
 
 **What's included:**
-- `default.Brewfile` - Common CLI tools and utilities (bat, eza, fd, ripgrep, gh, starship, etc.)
+- `default.Brewfile` - Common CLI tools (bat, eza, fd, ripgrep, gh, starship)
 - `development.Brewfile` - Development tools (kubernetes, cloud tools, programming languages)
 - `fonts.Brewfile` - Nerd Fonts for terminal use
 
 **How to customize:**
-1. Edit the example Brewfiles in the `/brew` directory to add or remove packages
-2. Create new `.Brewfile` files for your specific needs
-3. All `.Brewfile` files will be copied to `/usr/share/ublue-os/homebrew/` during build
+1. Edit the Brewfiles in [`custom/brew/`](custom/brew/) to add or remove packages
+2. Create new `.Brewfile` files for specific needs
+3. Add ujust shortcuts in [`custom/ujust/custom-apps.just`](custom/ujust/custom-apps.just)
 
-**Using Brewfiles on your system:**
-After switching to your custom image, install packages from a Brewfile:
+**User installation:**
 ```bash
 brew bundle --file=/usr/share/ublue-os/homebrew/default.Brewfile
+# Or use the ujust shortcut:
+ujust install-default-apps
 ```
 
 For more details, see the [brew directory README](/custom/brew/README.md).
 
-### Other Customizations
+### User Commands (`custom/ujust/`)
 
-- **Package Installation**: Edit `build/build.sh` to install system packages using dnf5
-- **System Services**: Enable or disable systemd services in `build/build.sh`
-- **Advanced Changes**: Modify the `Containerfile` for advanced container customization
+Provide convenient commands for your users via the `ujust` system:
+
+**What's included:**
+- `custom-apps.just` - Application installation commands (Brewfiles, Flatpaks, JetBrains Toolbox)
+- `custom-system.just` - System configuration commands (benchmarks, dev groups, maintenance)
+
+**How to use:**
+Users run `ujust` to see available commands, then `ujust command-name` to execute.
+
+**Important**: Do not install packages via dnf5 in ujust - use Brewfile shortcuts instead.
+
+For more details, see the [ujust directory README](/custom/ujust/README.md).
+
+### GUI Applications (`custom/flatpaks/`)
+
+Define Flatpak applications to install automatically on first boot:
+
+**What's included:**
+- `default.preinstall` - Core applications from Bluefin (browsers, GNOME apps, utilities)
+
+**How to customize:**
+1. Edit [`custom/flatpaks/default.preinstall`](custom/flatpaks/default.preinstall)
+2. Add Flatpak IDs in INI format
+3. Applications install after user setup (requires internet)
+
+**Important**: Flatpaks are downloaded on first boot, not included in the ISO.
+
+For more details, see the [flatpaks directory README](/custom/flatpaks/README.md).
+
+### Build-Time System Packages (`build/`)
+
+For packages that must be in the base image:
+
+- **Package Installation**: Edit [`build/build.sh`](build/build.sh) to install system packages using dnf5
+- **System Services**: Enable or disable systemd services in [`build/build.sh`](build/build.sh)
