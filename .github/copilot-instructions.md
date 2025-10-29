@@ -95,14 +95,13 @@ Signing is DISABLED by default. First builds succeed immediately. Enable later f
 │   ├── flatpaks/        # Flatpak preinstall (GUI apps, post-first-boot)
 │   └── ujust/           # User commands (shortcuts to Brewfiles, system tasks)
 ├── iso/                  # Local testing only (no CI/CD)
-│   ├── disk.toml        # VM disk config (QCOW2/RAW)
 │   ├── iso.toml         # ISO installer config (bootc switch URL)
 │   └── rclone/          # Upload configs (Cloudflare R2, AWS S3, etc.)
 └── .github/workflows/    # CI/CD
     ├── build-testing.yml      # Builds :testing on push to testing
     ├── release-please.yml     # Auto-creates release PRs, merges to main
     ├── build.yml              # Builds :stable on main
-    └── ghcr-pruner.yml        # Deletes images >90 days old
+    └── clean.yml        # Deletes images >90 days old
 ```
 
 ---
@@ -123,9 +122,7 @@ Signing is DISABLED by default. First builds succeed immediately. Enable later f
 - Check @bootc-dev for container best practices
 
 ### Branch Strategy
-- **testing** = Development branch. All work happens here. Builds `:testing` images.
 - **main** = Production releases ONLY. Never push directly. Builds `:stable` images.
-- **Release Please** = Auto-creates PRs, auto-merges testing→main on PR merge.
 - **Conventional Commits** = REQUIRED. `feat:`, `fix:`, `chore:`, etc.
 
 ---
