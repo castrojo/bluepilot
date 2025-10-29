@@ -1,5 +1,29 @@
 # Copilot Instructions for Customizing bootc Image Template
 
+## CRITICAL: Strict Linting Before Commits
+
+**BEFORE COMMITTING ANY CHANGES, YOU MUST:**
+
+1. **Validate all YAML files** - Use `python3 -c "import yaml; yaml.safe_load(open('file.yml'))"`
+   - Check all workflow files in `.github/workflows/`
+   - Verify renovate.json5 and other config files
+   - Ensure proper indentation (YAML is whitespace-sensitive)
+
+2. **Run shellcheck on all shell scripts** - Use `shellcheck script.sh`
+   - Check all files in `build/` directory
+   - Verify all `.sh` files including examples
+   - Fix or suppress warnings with appropriate directives
+
+3. **Verify JSON/JSON5 syntax** - Use `python3 -m json.tool` or appropriate validator
+   - Check renovate.json5
+   - Validate any JSON configuration files
+
+4. **Test Justfile syntax** - Run `just --list` to verify
+   - Ensure all recipes are valid
+   - Check for typos in recipe names
+
+**Never commit files with syntax errors. This breaks CI/CD and user workflows.**
+
 ## CRITICAL: Template Initialization
 
 **WHEN THIS REPOSITORY IS USED AS A TEMPLATE, YOU MUST:**
