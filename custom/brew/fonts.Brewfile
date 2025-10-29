@@ -1,6 +1,8 @@
 # Brewfile for fonts
 # Nerd Fonts with icons and glyphs for terminals and editors
 
+tap "homebrew/cask-fonts"
+
 # Popular coding fonts
 cask "font-fira-code-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
