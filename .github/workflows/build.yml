@@ -166,25 +166,31 @@ jobs:
             podman tag ${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }} ${{ env.IMAGE_NAME }}:$tag
           done
 
-      # SBOM (Software Bill of Materials) generation using Syft
-      # This creates a detailed inventory of all software components in the image
-      - name: Setup Syft
-        id: setup-syft
-        uses: anchore/sbom-action/download-syft@8e94d75ddd33f69f691467e42275782e4bfefe84 # v0.20.9
-        with:
-          syft-version: v1.20.0
-
-      - name: Generate SBOM
-        id: generate-sbom
-        env:
-          IMAGE: ${{ env.IMAGE_NAME }}
-          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
-          SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
-        run: |
-          OUTPUT_PATH="$(mktemp -d)/sbom.json"
-          export SYFT_PARALLELISM=$(($(nproc)*2))
-          $SYFT_CMD ${IMAGE}:${DEFAULT_TAG} -o spdx-json=${OUTPUT_PATH}
-          echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
+      # SBOM (OPTIONAL): Software Bill of Materials generation using Syft
+      # Creates a detailed inventory of all software components in the image for supply chain security.
+      # To enable:
+      #   1. Uncomment the "Setup Syft" step below
+      #   2. Uncomment the "Generate SBOM" step below
+      #   3. If using image signing, also uncomment the "Add SBOM Attestation" step further down
+      # Documentation: https://github.com/anchore/syft
+      
+      # - name: Setup Syft
+      #   id: setup-syft
+      #   uses: anchore/sbom-action/download-syft@8e94d75ddd33f69f691467e42275782e4bfefe84 # v0.20.9
+      #   with:
+      #     syft-version: v1.20.0
+      #
+      # - name: Generate SBOM
+      #   id: generate-sbom
+      #   env:
+      #     IMAGE: ${{ env.IMAGE_NAME }}
+      #     DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
+      #     SYFT_CMD: ${{ steps.setup-syft.outputs.cmd }}
+      #   run: |
+      #     OUTPUT_PATH="$(mktemp -d)/sbom.json"
+      #     export SYFT_PARALLELISM=$(($(nproc)*2))
+      #     $SYFT_CMD ${IMAGE}:${DEFAULT_TAG} -o spdx-json=${OUTPUT_PATH}
+      #     echo "OUTPUT_PATH=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
 
       # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
       # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
