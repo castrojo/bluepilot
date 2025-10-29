@@ -74,14 +74,14 @@ This repository is a Universal Blue bootc image template for creating custom Lin
 │       └── custom-system.just
 ├── iso/                      # ISO and disk image configurations
 │   ├── disk.toml            # Configuration for QCOW2/RAW disk images (local testing)
-│   └── iso.toml             # ISO configuration for Anaconda installer (local testing)
-├── rclone/
-│   ├── README.md            # rclone configuration guide
-│   ├── cloudflare-r2.conf   # Cloudflare R2 example config
-│   ├── aws-s3.conf          # AWS S3 example config
-│   ├── backblaze-b2.conf    # Backblaze B2 example config
-│   ├── sftp.conf            # SFTP upload example config
-│   └── scp.conf             # SCP upload example config
+│   ├── iso.toml             # ISO configuration for Anaconda installer (local testing)
+│   └── rclone/              # rclone configuration for manual ISO uploads
+│       ├── README.md         # rclone configuration guide
+│       ├── cloudflare-r2.conf # Cloudflare R2 example config
+│       ├── aws-s3.conf       # AWS S3 example config
+│       ├── backblaze-b2.conf # Backblaze B2 example config
+│       ├── sftp.conf         # SFTP upload example config
+│       └── scp.conf          # SCP upload example config
 └── .github/workflows/
     └── build.yml            # CI/CD for building and publishing container images
 ```
@@ -477,7 +477,7 @@ just build-iso
 **Note on Disk Images**:
 - This template no longer includes automated ISO/disk image building workflows
 - ISO and disk images are built locally using `just build-iso` and `just build-qcow2`
-- For distribution, users can manually build and upload using the rclone configurations in the `/rclone` directory
+- For distribution, users can manually build and upload using the rclone configurations in the `/iso/rclone` directory
 
 **Decision Logic**:
 - build.yml runs automatically - no changes needed for typical use
@@ -488,7 +488,7 @@ just build-iso
 
 **When**: User wants to upload locally-built ISOs/disk images to cloud storage.
 
-**Where**: `/rclone` directory contains example configurations
+**Where**: `/iso/rclone` directory contains example configurations
 
 **Available Providers**:
 - `cloudflare-r2.conf` - Cloudflare R2 (S3-compatible, zero egress fees)
@@ -498,7 +498,7 @@ just build-iso
 - `scp.conf` - SCP upload to any server
 
 **How to Use**:
-1. Choose a provider configuration from `/rclone` directory
+1. Choose a provider configuration from `/iso/rclone` directory
 2. Follow the setup instructions in the config file
 3. Set up the required secrets/credentials
 4. Build ISO locally: `just build-iso`
