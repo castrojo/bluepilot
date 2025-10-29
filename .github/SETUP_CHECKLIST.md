@@ -106,7 +106,7 @@ Signing is disabled by default to allow initial builds to succeed.
 
 - [ ] **Test Production Image** (after first release)
   ```bash
-  sudo bootc switch --transport registry ghcr.io/YOUR_USERNAME/YOUR_REPO:latest
+  sudo bootc switch --transport registry ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:latest
   sudo systemctl reboot
   ```
 
