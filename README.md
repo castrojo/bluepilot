@@ -40,9 +40,10 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 - See [custom/flatpaks/README.md](custom/flatpaks/README.md) for details
 
 ### Rechunker
-- Optimizes container image layer distribution for faster downloads
-- Automatically enabled in GitHub Actions workflow
-- Based on [hhd-dev/rechunk](https://github.com/hhd-dev/rechunk)
+- Optimizes container image layer distribution for better download resumability
+- Enabled by default in GitHub Actions workflow
+- Based on [hhd-dev/rechunk](https://github.com/hhd-dev/rechunk) v1.2.4
+- Processes each build to prevent single large layers that could cause download issues
 - No manual configuration required
 
 ### ujust Commands
@@ -151,8 +152,8 @@ This creates two files:
 
 4. Enable signing in the workflow:
    - Edit `.github/workflows/build.yml`
-   - Find the "OPTIONAL: Image Signing with Cosign" section (around line 189)
-   - Uncomment the signing steps (remove the `#` from the beginning of lines)
+   - Find the "OPTIONAL: Image Signing with Cosign" section.
+   - Uncomment the steps to install Cosign and sign the image (remove the `#` from the beginning of each line in that section).
    - Commit and push the change
 
 5. Your next build will produce signed images!
