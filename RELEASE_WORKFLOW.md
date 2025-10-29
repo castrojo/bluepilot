@@ -101,7 +101,7 @@ Every push to `testing` branch builds an image with the `:testing` tag:
 
 ```bash
 # Test the latest testing image
-sudo bootc switch --transport registry ghcr.io/YOUR_USERNAME/finpilot:testing
+sudo bootc switch --transport registry ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:testing
 sudo systemctl reboot
 ```
 
