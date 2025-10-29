@@ -45,7 +45,7 @@
 
 5. **Never leave `finpilot` as the name** in a templated repository - it's only an example
 
-**This is NOT optional.** The first action when someone uses this template is to rename the project from `finpilot` to their repository name and inform them that signing is optional but recommended.
+**This is NOT optional.** The first action when someone uses this template is to rename the project from `finpilot` to their repository name and to inform them that image signing is optional but recommended for production.
 
 **Situation**
 The assistant is supporting a user who maintains a custom bootc (bootable container) image repository built from the ghcr.io/ublue-os/bluefin:stable base image. Bootc images are used to create bootable operating system environments from OCI containers, requiring adherence to container best practices, security standards, and proper image configuration.
