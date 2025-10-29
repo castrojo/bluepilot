@@ -105,13 +105,32 @@ Customize your apps:
 - Add Flatpaks in `custom/flatpaks/` ([guide](custom/flatpaks/README.md))
 - Add ujust commands in `custom/ujust/` ([guide](custom/ujust/README.md))
 
-### 6. Build and Deploy
+### 5. Development Workflow
 
-Commit and push your changes. GitHub Actions will build your image automatically.
+All changes should be made via pull requests:
+
+1. Create a feature branch:
+```bash
+git checkout -b add-my-feature
+# Make your changes
+git add .
+git commit -m "feat: add my feature"
+git push origin add-my-feature
+```
+
+2. Open a pull request on GitHub targeting `main`
+3. The PR will automatically trigger:
+   - Build validation
+   - Brewfile, Flatpak, Justfile, and shellcheck validation
+   - Test image build
+4. Once checks pass, merge the PR
+5. Merging to `main` triggers the production build and publishes `:stable` image
+
+### 6. Deploy Your Image
 
 Switch to your image:
 ```bash
-sudo bootc switch ghcr.io/your-username/your-repo-name:stable
+sudo bootc switch --transport registry ghcr.io/your-username/your-repo-name:stable
 sudo systemctl reboot
 ```
 
@@ -252,32 +271,4 @@ These security features are disabled by default to allow immediate testing. When
 ---
 
 Template maintained by [Universal Blue Project](https://universal-blue.org/)
-
-## Release Workflow
-
-This template includes an automated release workflow using [Release Please](https://github.com/googleapis/release-please):
-
-- **Testing branch** (`testing`) - Push your changes here for testing
-  - Builds images with `:testing` tag
-  - Release Please tracks all changes
-- **Main branch** (`main`) - Production releases only
-  - Builds images with `:stable` tag
-  - Only updated via Release Please merges
-
-### Quick Start
-
-1. Push to `testing` branch using [Conventional Commits](https://www.conventionalcommits.org/):
-   ```bash
-   git commit -m "feat: add new feature"
-   git push origin testing
-   ```
-
-2. Release Please creates/updates a release PR automatically
-
-3. Merge the release PR when ready:
-   - Creates a GitHub Release
-   - Automatically merges to `main`
-   - Builds `:stable` image
-
-See [RELEASE_WORKFLOW.md](RELEASE_WORKFLOW.md) for detailed documentation.
 
