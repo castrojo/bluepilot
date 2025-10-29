@@ -1,268 +1,155 @@
 # finpilot
 
-This repository is meant to be a template for building your own custom [bootc](https://github.com/bootc-dev/bootc) image. This template is the recommended way to make customizations to any image published by the Universal Blue Project.
+A template for building custom bootc operating system images based on [Universal Blue](https://universal-blue.org/).
 
-## ⚠️ Important: First Steps After Using This Template
+## ✨ What's Included
 
-**When you create a repository from this template, you MUST rename the project:**
+This template provides everything you need to create a custom Linux operating system:
 
-`finpilot` is just an example name. Follow these steps immediately after creating your repository:
+### 🏗️ **Build System**
+- **Automated Builds**: GitHub Actions builds your image on every commit
+- **Signed Images**: Automatic signing with cosign for security
+- **Version Tracking**: Renovate automatically updates your base image
+- **SBOM Generation**: Software Bill of Materials for supply chain security
+- **Image Validation**: Automatic linting with `bootc container lint`
 
-1. **Update the Containerfile** (line 9):
-   ```dockerfile
-   # Name: your-repo-name
-   ```
+### 🍺 **Homebrew Integration** ([see custom/brew/README.md](custom/brew/README.md))
+- Pre-configured Brewfiles for easy package installation
+- Includes curated collections: development tools, fonts, CLI utilities
+- Users install packages at runtime with `brew bundle`
 
-2. **Update the Justfile** (line 1):
-   ```just
-   export image_name := env("IMAGE_NAME", "your-repo-name")
-   ```
+### 📦 **Flatpak Support** ([see custom/flatpaks/README.md](custom/flatpaks/README.md))
+- Pre-configured list of GUI applications
+- Automatically installed on first boot after user setup
+- Includes browsers, productivity apps, and GNOME utilities
 
-3. **Update README.md** (line 1):
-   ```markdown
-   # your-repo-name
-   ```
+### 🎮 **Handheld Daemon (HHD)**
+- Optional support for gaming handhelds (Steam Deck, ROG Ally, Legion Go)
+- Provides controller mappings and performance tweaks
+- Enable by uncommenting in build scripts
 
-4. **Update artifacthub-repo.yml** (line 5):
-   ```yaml
-   repositoryID: your-repo-name
-   ```
+### ⚡ **ujust Commands** ([see custom/ujust/README.md](custom/ujust/README.md))
+- User-friendly command shortcuts via `ujust`
+- Pre-configured examples for app installation and system maintenance
+- Easily customizable for your specific needs
 
-5. **Update custom/ujust/README.md** (~line 175):
-   ```bash
-   sudo bootc switch --target localhost/your-repo-name:latest
-   ```
+### 🔧 **Build Scripts**
+- Modular numbered scripts (10-, 20-, 30-) run in order
+- Example scripts included:
+  - Third-party repositories (Chrome, 1Password)
+  - Desktop environment replacement (COSMIC)
+- Helper functions for safe COPR usage
 
-**All 5 files must use the same name for consistency.** The Containerfile comment (line 9) is the single source of truth.
+## 🚀 Quick Start
 
-# Community
+### 1. Create Your Repository
 
-If you have questions about this template after following the instructions, try the following spaces:
+Click "Use this template" → Create a new repository
+
+### 2. Rename the Project
+
+**IMPORTANT**: Change `finpilot` to your repository name in 5 files:
+
+1. `Containerfile` (line 9): `# Name: your-repo-name`
+2. `Justfile` (line 1): `export image_name := "your-repo-name"`
+3. `README.md` (line 1): `# your-repo-name`
+4. `artifacthub-repo.yml` (line 5): `repositoryID: your-repo-name`
+5. `custom/ujust/README.md` (~line 175): `localhost/your-repo-name:latest`
+
+### 3. Set Up Signing (Required)
+
+Generate a signing key for your images:
+
+```bash
+cosign generate-key-pair
+```
+
+Add the **private key** (`cosign.key` contents) to GitHub:
+- Go to: Settings → Secrets and variables → Actions
+- Create secret: `SIGNING_SECRET`
+- Paste the entire contents of `cosign.key`
+
+**⚠️ Never commit `cosign.key` to the repository!**
+
+### 4. Enable GitHub Actions
+
+- Go to the "Actions" tab in your repository
+- Click "I understand my workflows, go ahead and enable them"
+
+### 5. Make It Yours
+
+**Choose your base image** in `Containerfile` (line 23):
+```dockerfile
+FROM ghcr.io/ublue-os/bluefin:stable
+```
+
+Options:
+- `bluefin:stable` - Developer-focused with GNOME
+- `bazzite:stable` - Gaming-optimized 
+- `aurora:stable` - KDE Plasma desktop
+
+**Add your packages** in `build/10-build.sh`:
+```bash
+dnf5 install -y package-name
+```
+
+**Customize your apps**:
+- Add Brewfiles in `custom/brew/` ([guide](custom/brew/README.md))
+- Add Flatpaks in `custom/flatpaks/` ([guide](custom/flatpaks/README.md))
+- Add ujust commands in `custom/ujust/` ([guide](custom/ujust/README.md))
+
+### 6. Build and Deploy
+
+**Commit and push** - GitHub Actions will build your image automatically.
+
+**Switch to your image**:
+```bash
+sudo bootc switch ghcr.io/your-username/your-repo-name:latest
+sudo systemctl reboot
+```
+
+## 📖 Detailed Guides
+
+- **[Homebrew/Brewfiles](custom/brew/README.md)** - Runtime package management
+- **[Flatpak Preinstall](custom/flatpaks/README.md)** - GUI application setup
+- **[ujust Commands](custom/ujust/README.md)** - User convenience commands
+- **[Build Scripts](build/README.md)** - Build-time customization
+
+## 🧪 Local Testing
+
+Test your changes before pushing:
+
+```bash
+just build              # Build container image
+just build-qcow2        # Build VM disk image
+just run-vm-qcow2       # Test in browser-based VM
+```
+
+## 🤝 Community
+
 - [Universal Blue Forums](https://universal-blue.discourse.group/)
 - [Universal Blue Discord](https://discord.gg/WEu6BdFEtp)
-- [bootc discussion forums](https://github.com/bootc-dev/bootc/discussions) - This is not an Universal Blue managed space, but is an excellent resource if you run into issues with building bootc images.
+- [bootc Discussion](https://github.com/bootc-dev/bootc/discussions)
 
-# How to Use
+## 📚 Learn More
 
-To get started on your first bootc image, simply read and follow the steps in the next few headings.
-If you prefer instructions in video form, TesterTech created an excellent tutorial, embedded below.
+- [Universal Blue Documentation](https://universal-blue.org/)
+- [bootc Documentation](https://containers.github.io/bootc/)
+- [Video Tutorial by TesterTech](https://www.youtube.com/watch?v=IxBl11Zmq5wE)
 
-[![Video Tutorial](https://img.youtube.com/vi/IxBl11Zmq5w/0.jpg)](https://www.youtube.com/watch?v=IxBl11Zmq5wE)
+## 🔐 Security
 
-## Step 0: Prerequisites
+This template provides:
+- **Image signing** with cosign (cryptographic verification)
+- **SBOM generation** (Software Bill of Materials)
+- **Provenance attestation** (build metadata)
+- **Automated security updates** via Renovate
 
-These steps assume you have the following:
-- A Github Account
-- A machine running a bootc image (e.g. Bazzite, Bluefin, Aurora, or Fedora Atomic)
-- Experience installing and using CLI programs
-
-## Step 1: Preparing the Template
-
-### Step 1a: Copying the Template
-
-Select `Use this Template` on this page. You can set the name and description of your repository to whatever you would like, but all other settings should be left untouched.
-
-Once you have finished copying the template, you need to enable the Github Actions workflows for your new repository.
-To enable the workflows, go to the `Actions` tab of the new repository and click the button to enable workflows.
-
-### Step 1b: Enabling Renovate (Recommended)
-
-[Renovate](https://docs.renovatebot.com/) is a dependency update tool that will automatically keep your base image and other dependencies up to date. This template includes:
-
-- **Automated Renovate workflow** (`.github/workflows/renovate.yml`) that runs every 6 hours
-- Pre-configured rules (`.github/renovate.json5`) for tracking your base image
-- Automatic merging of digest updates (security patches)
-- Automatic build triggering when the upstream image changes
-
-**Setup is automatic!** The included workflow uses `GITHUB_TOKEN` and runs every 6 hours. No additional configuration needed.
-
-#### What Renovate Monitors
-
-The automated workflow will track:
-
-- **Base Image**: The `FROM` statement in your `Containerfile` (e.g., `ghcr.io/ublue-os/bluefin:stable`)
-  - Digest updates (security patches) are auto-merged and trigger a rebuild
-  - Version updates (e.g., `stable` → `latest`) require manual review
-- **Bootc Image Builder**: The `bib_image` variable in the `Justfile`
-- **GitHub Actions**: Workflow dependencies in `.github/workflows/`
-
-When you change your base image in the `Containerfile`, Renovate will automatically start tracking the new image without requiring any configuration changes!
-
-#### How It Works
-
-1. **Every 6 hours**: Renovate checks for updates to your dependencies
-2. **Digest updates**: When your base image gets security patches, Renovate:
-   - Creates a PR with the new digest
-   - Auto-merges the PR (labeled with `renovate` and `automerge`)
-   - Triggers the build workflow automatically
-3. **Version updates**: Creates a PR for manual review (e.g., switching from `stable` to `latest`)
-
-#### Manual Trigger
-
-You can manually trigger Renovate at any time:
-- Go to the **Actions** tab
-- Select **Renovate** workflow
-- Click **Run workflow**
-
-### Step 1c: Cloning the New Repository
-
-Here I will defer to the much superior GitHub documentation on the matter. You can use whichever method is easiest.
-[GitHub Documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-
-Once you have the repository on your local drive, proceed to the next step.
-
-## Step 2: Initial Setup
-
-### Step 2a: Creating a Cosign Key
-
-Container signing is important for end-user security and is enabled on all Universal Blue images. By default the image builds *will fail* if you don't.
-
-First, install the [cosign CLI tool](https://edu.chainguard.dev/open-source/sigstore/cosign/how-to-install-cosign/#installing-cosign-with-the-cosign-binary)
-With the cosign tool installed, run inside your repo folder:
-
+Your images are signed and can be verified with:
 ```bash
-COSIGN_PASSWORD="" cosign generate-key-pair
+cosign verify --key cosign.pub ghcr.io/your-username/your-repo-name:latest
 ```
 
-The signing key will be used in GitHub Actions and will not work if it is password protected.
+---
 
-> [!WARNING]
-> Be careful to *never* accidentally commit `cosign.key` into your git repo. If this key goes out to the public, the security of your repository is compromised.
-
-Next, you need to add the key to GitHub. This makes use of GitHub's secret signing system.
-
-<details>
-    <summary>Using the Github Web Interface (preferred)</summary>
-
-Go to your repository settings, under `Secrets and Variables` -> `Actions`
-![image](https://user-images.githubusercontent.com/1264109/216735595-0ecf1b66-b9ee-439e-87d7-c8cc43c2110a.png)
-Add a new secret and name it `SIGNING_SECRET`, then paste the contents of `cosign.key` into the secret and save it. Make sure it's the .key file and not the .pub file. Once done, it should look like this:
-![image](https://user-images.githubusercontent.com/1264109/216735690-2d19271f-cee2-45ac-a039-23e6a4c16b34.png)
-</details>
-<details>
-<summary>Using the Github CLI</summary>
-
-If you have the `github-cli` installed, run:
-
-```bash
-gh secret set SIGNING_SECRET < cosign.key
-```
-</details>
-
-### Step 2b: Choosing Your Base Image
-
-To choose a base image, simply modify the line in the container file starting with `FROM`. This will be the image your image derives from, and is your starting point for modifications.
-For a base image, you can choose any of the Universal Blue images or start from a Fedora Atomic system. Below this paragraph is a dropdown with a non-exhaustive list of potential base images.
-
-<details>
-    <summary>Base Images</summary>
-
-- Bazzite: `ghcr.io/ublue-os/bazzite:stable`
-- Aurora: `ghcr.io/ublue-os/aurora:stable`
-- Bluefin: `ghcr.io/ublue-os/bluefin:stable`
-- Universal Blue Base: `ghcr.io/ublue-os/base-main:latest`
-- Fedora: `quay.io/fedora/fedora-bootc:42`
-
-You can find more Universal Blue images on the [packages page](https://github.com/orgs/ublue-os/packages).
-</details>
-
-If you don't know which image to pick, choosing the one your system is currently on is the best bet for a smooth transition. To find out what image your system currently uses, run the following command:
-```bash
-sudo bootc status
-```
-This will show you all the info you need to know about your current image. The image you are currently on is displayed after `Booted image:`. Paste that information after the `FROM` statement in the Containerfile to set it as your base image.
-
-### Step 2c: Changing Names
-
-Change the first line in the [Justfile](./Justfile) to your image's name.
-
-To commit and push all the files changed and added in step 2 into your Github repository:
-```bash
-git add Containerfile Justfile cosign.pub
-git commit -m "Initial Setup"
-git push
-```
-Once pushed, go look at the Actions tab on your Github repository's page.  The green checkmark should be showing on the top commit, which means your new image is ready!
-
-## Step 3: Switch to Your Image
-
-From your bootc system, run the following command substituting in your Github username and image name where noted.
-```bash
-sudo bootc switch ghcr.io/<username>/<image_name>
-```
-This should queue your image for the next reboot, which you can do immediately after the command finishes. You have officially set up your custom image! See the following section for an explanation of the important parts of the template for customization.
-
-## renovate.json5
-
-The [renovate.json5](./.github/renovate.json5) file configures [Renovate](https://docs.renovatebot.com/) to automatically keep your dependencies up to date. The configuration includes:
-
-- **Custom Managers**: Regex patterns to detect Docker images in the `Justfile` with digest pins
-- **Automerge Rules**: Automatically merges digest updates for your base image and dependencies
-- **Package Rules**: Specific rules for different types of updates and packages
-
-The configuration is designed to automatically track whatever base image you choose in the `Containerfile`. When you change your base image, Renovate will automatically start monitoring the new image without requiring any configuration changes.
-
-## Customization
-
-Your customizations are organized in dedicated directories for easy management:
-
-### Runtime Package Management (`custom/brew/`)
-
-This template includes [Homebrew](https://brew.sh/) Brewfiles for user package installation:
-
-**What's included:**
-- `default.Brewfile` - Common CLI tools (bat, eza, fd, ripgrep, gh, starship)
-- `development.Brewfile` - Development tools (kubernetes, cloud tools, programming languages)
-- `fonts.Brewfile` - Nerd Fonts for terminal use
-
-**How to customize:**
-1. Edit the Brewfiles in [`custom/brew/`](custom/brew/) to add or remove packages
-2. Create new `.Brewfile` files for specific needs
-3. Add ujust shortcuts in [`custom/ujust/custom-apps.just`](custom/ujust/custom-apps.just)
-
-**User installation:**
-```bash
-brew bundle --file=/usr/share/ublue-os/homebrew/default.Brewfile
-# Or use the ujust shortcut:
-ujust install-default-apps
-```
-
-For more details, see the [brew directory README](/custom/brew/README.md).
-
-### User Commands (`custom/ujust/`)
-
-Provide convenient commands for your users via the `ujust` system:
-
-**What's included:**
-- `custom-apps.just` - Application installation commands (Brewfiles, Flatpaks, JetBrains Toolbox)
-- `custom-system.just` - System configuration commands (benchmarks, dev groups, maintenance)
-
-**How to use:**
-Users run `ujust` to see available commands, then `ujust command-name` to execute.
-
-**Important**: Do not install packages via dnf5 in ujust - use Brewfile shortcuts instead.
-
-For more details, see the [ujust directory README](/custom/ujust/README.md).
-
-### GUI Applications (`custom/flatpaks/`)
-
-Define Flatpak applications to install automatically on first boot:
-
-**What's included:**
-- `default.preinstall` - Core applications from Bluefin (browsers, GNOME apps, utilities)
-
-**How to customize:**
-1. Edit [`custom/flatpaks/default.preinstall`](custom/flatpaks/default.preinstall)
-2. Add Flatpak IDs in INI format
-3. Applications install after user setup (requires internet)
-
-**Important**: Flatpaks are downloaded on first boot, not included in the ISO.
-
-For more details, see the [flatpaks directory README](/custom/flatpaks/README.md).
-
-### Build-Time System Packages (`build/`)
-
-For packages that must be in the base image:
-
-- **Package Installation**: Edit [`build/10-build.sh`](build/10-build.sh) to install system packages using dnf5
-- **System Services**: Enable or disable systemd services in [`build/10-build.sh`](build/10-build.sh)
+**Template maintained by**: [Universal Blue Project](https://universal-blue.org/)
