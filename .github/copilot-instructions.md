@@ -92,6 +92,103 @@ Signing is DISABLED by default. First builds succeed immediately. Enable later f
 
 ---
 
+## Where to Add Packages
+
+This section provides clear guidance on where to add different types of packages.
+
+### System Packages (dnf5 - Build-time)
+
+**Location**: `build/10-build.sh`
+
+System packages are installed at build-time and baked into the container image. Use `dnf5` exclusively.
+
+**Example**:
+```bash
+# In build/10-build.sh
+dnf5 install -y vim git htop neovim tmux
+```
+
+**When to use**: 
+- System utilities and services
+- Dependencies required for other build-time operations
+- Packages that need to be available immediately on first boot
+- Services that need to be enabled with `systemctl enable`
+
+**Important**: 
+- Always use `dnf5` (never `dnf`, `yum`, or `rpm-ostree`)
+- Always add `-y` flag for non-interactive installs
+- For COPR repositories, use `copr_install_isolated` pattern and disable after use
+
+### Homebrew Packages (Brew - Runtime)
+
+**Location**: `custom/brew/*.Brewfile`
+
+Homebrew packages are installed by users after deployment. Best for CLI tools and development environments.
+
+**Files**:
+- `custom/brew/default.Brewfile` - General purpose CLI tools
+- `custom/brew/development.Brewfile` - Development tools and environments
+- `custom/brew/fonts.Brewfile` - Font packages
+- Create custom `*.Brewfile` as needed
+
+**Example**:
+```ruby
+# In custom/brew/default.Brewfile
+brew "bat"        # cat with syntax highlighting
+brew "eza"        # Modern replacement for ls
+brew "ripgrep"    # Faster grep
+brew "fd"         # Simple alternative to find
+```
+
+**When to use**:
+- CLI tools and utilities
+- Development tools (node, python, go, etc.)
+- User-specific tools that don't need to be in the base image
+- Tools that update frequently
+
+**Important**:
+- Brewfiles use Ruby syntax
+- Users install via `ujust` commands (e.g., `ujust install-default-apps`)
+- Not installed in ISO/container - users install after deployment
+
+### Flatpak Applications (GUI Apps - Runtime)
+
+**Location**: `custom/flatpaks/*.preinstall`
+
+Flatpak applications are GUI apps installed after first boot. Use INI format.
+
+**Files**:
+- `custom/flatpaks/default.preinstall` - Default GUI applications
+- Create custom `*.preinstall` files as needed
+
+**Example**:
+```ini
+# In custom/flatpaks/default.preinstall
+[Flatpak Preinstall org.mozilla.firefox]
+Branch=stable
+
+[Flatpak Preinstall com.visualstudio.code]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Calculator]
+Branch=stable
+```
+
+**When to use**:
+- GUI applications
+- Desktop apps (browsers, editors, media players)
+- Apps that users expect to have immediately available
+- Apps from Flathub (https://flathub.org/)
+
+**Important**:
+- Installed post-first-boot (not in ISO/container)
+- Requires internet connection
+- Find app IDs at https://flathub.org/
+- Use INI format with `[Flatpak Preinstall APP_ID]` sections
+- Always specify `Branch=stable` (or another branch)
+
+---
+
 ## Quick Reference: Common User Requests
 
 | Request | Action |
