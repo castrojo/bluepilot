@@ -9,7 +9,7 @@
       "changelog-path": false
     }
   },
-  "branches": ["testing"],
+  "separate-pull-requests": false,
   "changelog-sections": [
     {"type": "feat", "section": "Features", "hidden": false},
     {"type": "fix", "section": "Bug Fixes", "hidden": false},
