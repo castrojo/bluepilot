@@ -35,7 +35,7 @@ echo "::group:: Install Packages"
 # Example: dnf5 install -y tmux
 
 # Install system packages
-dnf5 install -y tmux micro mosh
+dnf5 install -y tmux micro mosh thunderbird
 
 # Example using COPR with isolated pattern:
 # copr_install_isolated "ublue-os/staging" package-name
