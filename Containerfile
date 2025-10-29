@@ -1,6 +1,6 @@
 # Allow build scripts to be referenced without being copied into the final image
 FROM scratch AS ctx
-COPY build /
+COPY build /build
 COPY custom /custom
 
 ###############################################################################
