@@ -32,6 +32,7 @@
 - **Confirm with the user** before implementing approaches that differ from Bluefin
 - **Check Bluefin repository** for established patterns when uncertain
 - **Explain the deviation** and why it's necessary if approved
+- **Always Refer to the documentation** for bootc at @bootc-dev - always check their documentation for best practices
 
 ### Examples of Enforced Patterns:
 ```bash
