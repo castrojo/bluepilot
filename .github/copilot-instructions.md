@@ -515,8 +515,6 @@ COSIGN_PASSWORD="" cosign generate-key-pair
 11. **ALWAYS** run shellcheck/YAML validation before committing
 12. **ALWAYS** update bootc switch URL in `iso/iso.toml` to match user's repo
 13. **ALWAYS** follow numbered script convention: `10-*.sh`, `20-*.sh`, `30-*.sh`
-14. **ALWAYS** validate commit message format before using report_progress tool
-
 ---
 
 ## Troubleshooting
