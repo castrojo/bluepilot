@@ -18,11 +18,8 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 
 ### Build System
 - Automated builds via GitHub Actions on every commit you make
-- Optional: Signed images with cosign for security (see production setup)
-- Version tracking with Renovate for automatic base image updates, builds only when the base image upstream is updated
-- Optional: SBOM generation for supply chain security (see production setup)
-- Image validation with `bootc container lint`
-- Automatic cleanup of old images (90+ days) to save storage space
+- Awesome self hosted Renovate setup that keeps all your images and actions up to date.
+- Automatic cleanup of old images (90+ days) to keep it tidy
 - Release workflow with testing branch - test changes before production
   - `testing` branch builds `:testing` images
   - `main` branch builds `:stable` images
