@@ -17,7 +17,7 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 ## What's Included
 
 ### Build System
-- Automated builds via GitHub Actions on every commit to main
+- Automated builds via GitHub Actions on every commit
 - Awesome self hosted Renovate setup that keeps all your images and actions up to date.
 - Automatic cleanup of old images (90+ days) to keep it tidy
 - Pull request workflow - test changes before merging to main
@@ -90,11 +90,6 @@ Choose your base image in `Containerfile` (line 23):
 FROM ghcr.io/ublue-os/bluefin:stable
 ```
 
-Options:
-- `bluefin:stable` - Developer-focused with GNOME
-- `bazzite:stable` - Gaming-optimized 
-- `aurora:stable` - KDE Plasma desktop
-
 Add your packages in `build/10-build.sh`:
 ```bash
 dnf5 install -y package-name
@@ -109,28 +104,19 @@ Customize your apps:
 
 All changes should be made via pull requests:
 
-1. Create a feature branch:
-```bash
-git checkout -b add-my-feature
-# Make your changes
-git add .
-git commit -m "feat: add my feature"
-git push origin add-my-feature
-```
-
-2. Open a pull request on GitHub targeting `main`
+1. Open a pull request on GitHub with the change you want.
 3. The PR will automatically trigger:
    - Build validation
    - Brewfile, Flatpak, Justfile, and shellcheck validation
    - Test image build
 4. Once checks pass, merge the PR
-5. Merging to `main` triggers the production build and publishes `:stable` image
+5. Merging triggers publishes a `:stable` image
 
 ### 6. Deploy Your Image
 
 Switch to your image:
 ```bash
-sudo bootc switch --transport registry ghcr.io/your-username/your-repo-name:stable
+sudo bootc switch ghcr.io/your-username/your-repo-name:stable
 sudo systemctl reboot
 ```
 
