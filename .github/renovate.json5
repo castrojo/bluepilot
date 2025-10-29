@@ -10,6 +10,7 @@
   customManagers: [
     {
       customType: 'regex',
+      description: 'Match container images in Justfile with tag and digest',
       fileMatch: [
         '^Justfile$',
       ],
@@ -17,6 +18,18 @@
         '(?<justName>.+?)\\s:=\\s(?:env\\(.+?,\\s)?["\'](?<packageName>\\S+?):(?<currentValue>\\S+?)@(?<currentDigest>sha256:[a-f0-9]+?)["\']\\)?',
       ],
       datasourceTemplate: 'docker',
+    },
+    {
+      customType: 'regex',
+      description: 'Match container images in Justfile run_args without tag or digest',
+      fileMatch: [
+        '^Justfile$',
+      ],
+      matchStrings: [
+        'run_args\\+=\\((?<packageName>[a-zA-Z0-9._:/-]+)\\)',
+      ],
+      datasourceTemplate: 'docker',
+      versioningTemplate: 'docker',
     },
   ],
 
@@ -34,14 +47,16 @@
       "labels": ["renovate", "automerge"],
     },
     {
-      "matchUpdateTypes": ["pin", "digest", "pinDigest"],
-      "matchPackageNames": ["ghcr.io/jasonn3/build-container-installer", "ghcr.io/hhd-dev/rechunk"],
+      "description": "Disable automerge for all rechunk updates to allow manual review",
+      "matchUpdateTypes": ["major", "minor", "patch", "digest", "pinDigest"],
+      "matchPackageNames": ["ghcr.io/hhd-dev/rechunk"],
       "automerge": false
     },
     {
-      "enabled": false,
-      "matchUpdateTypes": ["digest", "pinDigest", "pin"],
-      "matchDepTypes": ["container"],
+      "description": "Enable GitHub Actions updates since they are now pinned with SHA",
+      "enabled": true,
+      "matchUpdateTypes": ["digest", "pinDigest", "pin", "major", "minor", "patch"],
+      "matchDepTypes": ["action"],
       "matchFileNames": [".github/workflows/**.yaml", ".github/workflows/**.yml"],
     },
   ]
