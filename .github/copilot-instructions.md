@@ -3,12 +3,50 @@
 ## CRITICAL: Pre-Commit Checklist
 
 **Execute before EVERY commit:**
-1. **Shellcheck** - `shellcheck *.sh` on all modified shell files
-2. **YAML validation** - `python3 -c "import yaml; yaml.safe_load(open('file.yml'))"` on all modified YAML
-3. **Justfile syntax** - `just --list` to verify
-4. **Confirm with user** - Always confirm before committing and pushing
+1. **Conventional Commits** - ALL commits MUST follow conventional commit format (see below)
+2. **Shellcheck** - `shellcheck *.sh` on all modified shell files
+3. **YAML validation** - `python3 -c "import yaml; yaml.safe_load(open('file.yml'))"` on all modified YAML
+4. **Justfile syntax** - `just --list` to verify
+5. **Confirm with user** - Always confirm before committing and pushing
 
 **Never commit files with syntax errors.**
+
+### REQUIRED: Conventional Commit Format
+
+**ALL commits MUST use conventional commits format for Release Please:**
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Required commit types:**
+- `feat:` - New features (minor version bump)
+- `fix:` - Bug fixes (patch version bump)
+- `docs:` - Documentation only changes (no version bump)
+- `chore:` - Maintenance tasks (no version bump)
+- `build:` - Build system changes (no version bump)
+- `ci:` - CI/CD workflow changes (no version bump)
+- `refactor:` - Code refactoring (no version bump)
+- `test:` - Adding or updating tests (no version bump)
+
+**Breaking changes:**
+- Add `!` after type: `feat!:` or `fix!:`
+- Or add `BREAKING CHANGE:` in footer (major version bump)
+
+**Examples:**
+```bash
+feat: add neovim to build packages
+fix: correct flatpak preinstall path
+docs: update installation instructions
+chore: update renovate config
+feat!: migrate to new base image
+```
+
+**See `.github/commit-convention.md` for detailed examples.**
 
 ---
 
@@ -89,6 +127,103 @@ Signing is DISABLED by default. First builds succeed immediately. Enable later f
 - **main** = Production releases ONLY. Never push directly. Builds `:stable` images.
 - **Release Please** = Auto-creates PRs, auto-merges testing→main on PR merge.
 - **Conventional Commits** = REQUIRED. `feat:`, `fix:`, `chore:`, etc.
+
+---
+
+## Where to Add Packages
+
+This section provides clear guidance on where to add different types of packages.
+
+### System Packages (dnf5 - Build-time)
+
+**Location**: `build/10-build.sh`
+
+System packages are installed at build-time and baked into the container image. Use `dnf5` exclusively.
+
+**Example**:
+```bash
+# In build/10-build.sh
+dnf5 install -y vim git htop neovim tmux
+```
+
+**When to use**: 
+- System utilities and services
+- Dependencies required for other build-time operations
+- Packages that need to be available immediately on first boot
+- Services that need to be enabled with `systemctl enable`
+
+**Important**: 
+- Always use `dnf5` (never `dnf`, `yum`, or `rpm-ostree`)
+- Always add `-y` flag for non-interactive installs
+- For COPR repositories, use `copr_install_isolated` pattern and disable after use
+
+### Homebrew Packages (Brew - Runtime)
+
+**Location**: `custom/brew/*.Brewfile`
+
+Homebrew packages are installed by users after deployment. Best for CLI tools and development environments.
+
+**Files**:
+- `custom/brew/default.Brewfile` - General purpose CLI tools
+- `custom/brew/development.Brewfile` - Development tools and environments
+- `custom/brew/fonts.Brewfile` - Font packages
+- Create custom `*.Brewfile` as needed
+
+**Example**:
+```ruby
+# In custom/brew/default.Brewfile
+brew "bat"        # cat with syntax highlighting
+brew "eza"        # Modern replacement for ls
+brew "ripgrep"    # Faster grep
+brew "fd"         # Simple alternative to find
+```
+
+**When to use**:
+- CLI tools and utilities
+- Development tools (node, python, go, etc.)
+- User-specific tools that don't need to be in the base image
+- Tools that update frequently
+
+**Important**:
+- Brewfiles use Ruby syntax
+- Users install via `ujust` commands (e.g., `ujust install-default-apps`)
+- Not installed in ISO/container - users install after deployment
+
+### Flatpak Applications (GUI Apps - Runtime)
+
+**Location**: `custom/flatpaks/*.preinstall`
+
+Flatpak applications are GUI apps installed after first boot. Use INI format.
+
+**Files**:
+- `custom/flatpaks/default.preinstall` - Default GUI applications
+- Create custom `*.preinstall` files as needed
+
+**Example**:
+```ini
+# In custom/flatpaks/default.preinstall
+[Flatpak Preinstall org.mozilla.firefox]
+Branch=stable
+
+[Flatpak Preinstall com.visualstudio.code]
+Branch=stable
+
+[Flatpak Preinstall org.gnome.Calculator]
+Branch=stable
+```
+
+**When to use**:
+- GUI applications
+- Desktop apps (browsers, editors, media players)
+- Apps that users expect to have immediately available
+- Apps from Flathub (https://flathub.org/)
+
+**Important**:
+- Installed post-first-boot (not in ISO/container)
+- Requires internet connection
+- Find app IDs at https://flathub.org/
+- Use INI format with `[Flatpak Preinstall APP_ID]` sections
+- Always specify `Branch=stable` (or another branch)
 
 ---
 
@@ -263,20 +398,62 @@ bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:stable
 - `testing` - All development. Builds `:testing` images.
 - `main` - Production only. Builds `:stable` images. Never push directly.
 
-**Conventional Commits** (REQUIRED):
+**Conventional Commits** (REQUIRED - Release Please will NOT work without these):
+
+**Every single commit MUST follow this format:**
+```
+<type>[optional scope]: <description>
+
+[optional body]
+[optional footer]
+```
+
+**Valid commit types and their effects:**
 ```
 feat: new feature       → minor bump (0.1.0 → 0.2.0)
 fix: bug fix            → patch bump (0.1.0 → 0.1.1)
 feat!: breaking change  → major bump (0.1.0 → 1.0.0)
 docs: documentation     → no bump (changelog only)
 chore: maintenance      → no bump (changelog only)
+build: build changes    → no bump (changelog only)
+ci: CI/CD changes       → no bump (changelog only)
+refactor: refactoring   → no bump (changelog only)
+test: test changes      → no bump (changelog only)
 ```
+
+**INCORRECT (will break Release Please):**
+```bash
+git commit -m "add neovim"              # Missing type
+git commit -m "Add new packages"        # Missing type
+git commit -m "updated the README"      # Missing type
+git commit -m "feat add feature"        # Missing colon
+```
+
+**CORRECT:**
+```bash
+git commit -m "feat: add neovim"
+git commit -m "feat(packages): add development tools"
+git commit -m "fix: correct flatpak path"
+git commit -m "docs: update README installation steps"
+git commit -m "chore: update dependencies"
+```
+
+**For breaking changes:**
+```bash
+git commit -m "feat!: migrate to new base image"
+# OR
+git commit -m "feat: migrate to new base image
+
+BREAKING CHANGE: Users must reinstall from scratch"
+```
+
+**See `.github/commit-convention.md` for detailed examples and best practices.**
 
 **Process**:
 ```bash
 # Development
 git checkout testing
-git commit -m "feat: add neovim"
+git commit -m "feat: add neovim"  # MUST use conventional commits format
 git push origin testing
 # → Triggers build-testing.yml → :testing image
 # → Release Please updates PR
@@ -321,20 +498,23 @@ COSIGN_PASSWORD="" cosign generate-key-pair
 
 ## Critical Rules (Enforced)
 
-1. **NEVER** commit `cosign.key` to repository
-2. **ALWAYS** disable COPRs after use (`copr_install_isolated` function)
-3. **ALWAYS** use `dnf5` exclusively (never `dnf`, `yum`, `rpm-ostree`)
-4. **ALWAYS** use `-y` flag for non-interactive installs
-5. **NEVER** use `dnf5` in ujust files - only Brewfile/Flatpak shortcuts
-6. **ALWAYS** work on testing branch for development
-7. **ALWAYS** use Conventional Commits (`feat:`, `fix:`, etc.)
+1. **ALWAYS** use Conventional Commits format for ALL commits (required for Release Please)
+   - Format: `<type>[scope]: <description>`
+   - Valid types: `feat:`, `fix:`, `docs:`, `chore:`, `build:`, `ci:`, `refactor:`, `test:`
+   - Breaking changes: Add `!` or `BREAKING CHANGE:` in footer
+   - See `.github/commit-convention.md` for examples
+2. **NEVER** commit `cosign.key` to repository
+3. **ALWAYS** disable COPRs after use (`copr_install_isolated` function)
+4. **ALWAYS** use `dnf5` exclusively (never `dnf`, `yum`, `rpm-ostree`)
+5. **ALWAYS** use `-y` flag for non-interactive installs
+6. **NEVER** use `dnf5` in ujust files - only Brewfile/Flatpak shortcuts
+7. **ALWAYS** work on testing branch for development
 8. **ALWAYS** let Release Please handle testing→main merges
 9. **NEVER** push directly to main (only via Release Please)
 10. **ALWAYS** confirm with user before deviating from @ublue-os/bluefin patterns
 11. **ALWAYS** run shellcheck/YAML validation before committing
 12. **ALWAYS** update bootc switch URL in `iso/iso.toml` to match user's repo
 13. **ALWAYS** follow numbered script convention: `10-*.sh`, `20-*.sh`, `30-*.sh`
-
 ---
 
 ## Troubleshooting
@@ -344,7 +524,9 @@ COSIGN_PASSWORD="" cosign generate-key-pair
 | Build fails: "permission denied" | Signing misconfigured | Verify signing commented out OR `SIGNING_SECRET` set |
 | Build fails: "package not found" | Typo or unavailable | Check spelling, verify on RPMfusion, add COPR if needed |
 | Build fails: "base image not found" | Invalid FROM line | Check syntax in `Containerfile` line 5 |
-| Release Please no PRs | Missing setup | Enable Actions permissions, use conventional commits, push to testing |
+| Release Please no PRs | Missing setup OR invalid commits | 1. Enable Actions permissions 2. MUST use conventional commits format 3. Push to testing branch |
+| Release Please PR not updating | Invalid commit format | ALL commits MUST follow `<type>: <description>` format. Fix commit messages and force push |
+| Commits not in changelog | Wrong commit type | Use `feat:` or `fix:` for changes. `docs:`, `chore:` etc. don't trigger releases |
 | Changes not in production | Wrong workflow | Push to testing first, merge Release Please PR to get `:stable` |
 | ISO missing customizations | Wrong bootc URL | Update `iso/iso.toml` bootc switch URL to match repo |
 | COPR packages missing after boot | COPR not disabled | COPRs persist if not disabled - use `copr_install_isolated` |
