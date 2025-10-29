@@ -41,10 +41,10 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 
 ### Rechunker
 - Optimizes container image layer distribution for better download resumability
-- Enabled by default in GitHub Actions workflow
 - Based on [hhd-dev/rechunk](https://github.com/hhd-dev/rechunk) v1.2.4
-- Processes each build to prevent single large layers that could cause download issues
-- No manual configuration required
+- Disabled by default for faster initial builds
+- Enable in `.github/workflows/build.yml` by uncommenting the rechunker steps (see comments in file)
+- Recommended for production deployments after initial testing
 
 ### ujust Commands
 - User-friendly command shortcuts via `ujust`

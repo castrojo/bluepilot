@@ -375,6 +375,21 @@ See `build/copr-install-functions.sh` for reusable patterns:
 - `copr_install_isolated` - Enable COPR, install packages, disable COPR
 - Follow @ublue-os/bluefin conventions exactly
 
+### Rechunker (Optional)
+Rechunker optimizes container layer distribution for better resumability.
+
+**Default**: Disabled (faster initial builds)
+
+**To enable**:
+1. Edit `.github/workflows/build.yml`
+2. Uncomment "Run Rechunker" step (~line 124)
+3. Uncomment "Load in podman and tag" step (~line 151)
+4. Comment out "Tag for registry" step (~line 159)
+
+**Recommendation**: Enable for production after initial testing succeeds.
+
+**Documentation**: https://github.com/hhd-dev/rechunk
+
 ---
 
 ## Image Tags Reference
