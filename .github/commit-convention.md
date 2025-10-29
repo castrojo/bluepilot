@@ -112,4 +112,5 @@ BREAKING CHANGE: This upgrade requires a clean reinstall for existing users.
 - Don't end subject line with a period
 - Separate subject from body with a blank line
 - Use body to explain *what* and *why*, not *how*
+- Be short and concise, avoid long commit messages, keep it simple
 - Reference issues/PRs in footer when applicable
