@@ -13,42 +13,11 @@
 
 ### REQUIRED: Conventional Commit Format
 
-**ALL commits MUST use conventional commits format for Release Please:**
+**ALL commits MUST use conventional commits format**
 
 ```
 <type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
 ```
-
-**Required commit types:**
-- `feat:` - New features (minor version bump)
-- `fix:` - Bug fixes (patch version bump)
-- `docs:` - Documentation only changes (no version bump)
-- `chore:` - Maintenance tasks (no version bump)
-- `build:` - Build system changes (no version bump)
-- `ci:` - CI/CD workflow changes (no version bump)
-- `refactor:` - Code refactoring (no version bump)
-- `test:` - Adding or updating tests (no version bump)
-
-**Breaking changes:**
-- Add `!` after type: `feat!:` or `fix!:`
-- Or add `BREAKING CHANGE:` in footer (major version bump)
-
-**Examples:**
-```bash
-feat: add neovim to build packages
-fix: correct flatpak preinstall path
-docs: update installation instructions
-chore: update renovate config
-feat!: migrate to new base image
-```
-
-**See `.github/commit-convention.md` for detailed examples.**
-
----
 
 ## CRITICAL: Template Initialization
 
@@ -66,16 +35,7 @@ feat!: migrate to new base image
 - `custom/ujust/README.md` (~line 175)
 - `.github/workflows/ghcr-pruner.yml` (line 22)
 
-### 2. Create testing branch
-
-```bash
-# Enable: Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
-git checkout -b testing
-git commit --allow-empty -m "feat: initial release"
-git push -u origin testing
-```
-
-### 3. Explain signing is optional
+### 2. Explain signing is optional
 
 Signing is DISABLED by default. First builds succeed immediately. Enable later for production (see README).
 
@@ -257,7 +217,7 @@ FROM quay.io/fedora/fedora-bootc:42       # Upstream Fedora
 FROM quay.io/centos-bootc/centos-bootc:stream10  # Enterprise
 ```
 
-**Tags**: `:stable` (recommended), `:latest` (bleeding edge), `:gts` (older stable), `-nvidia` variants available
+**Tags**: `:stable` (recommended), `:latest` (bleeding edge), `-nvidia` variants available
 
 ### 2. Build Scripts (`build/`)
 
@@ -392,82 +352,14 @@ bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:stable
 ### 7. Release Workflow
 
 **Branches**:
-- `testing` - All development. Builds `:testing` images.
 - `main` - Production only. Builds `:stable` images. Never push directly.
-
-**Conventional Commits** (REQUIRED - Release Please will NOT work without these):
-
-**Every single commit MUST follow this format:**
-```
-<type>[optional scope]: <description>
-
-[optional body]
-[optional footer]
-```
-
-**Valid commit types and their effects:**
-```
-feat: new feature       → minor bump (0.1.0 → 0.2.0)
-fix: bug fix            → patch bump (0.1.0 → 0.1.1)
-feat!: breaking change  → major bump (0.1.0 → 1.0.0)
-docs: documentation     → no bump (changelog only)
-chore: maintenance      → no bump (changelog only)
-build: build changes    → no bump (changelog only)
-ci: CI/CD changes       → no bump (changelog only)
-refactor: refactoring   → no bump (changelog only)
-test: test changes      → no bump (changelog only)
-```
-
-**INCORRECT (will break Release Please):**
-```bash
-git commit -m "add neovim"              # Missing type
-git commit -m "Add new packages"        # Missing type
-git commit -m "updated the README"      # Missing type
-git commit -m "feat add feature"        # Missing colon
-```
-
-**CORRECT:**
-```bash
-git commit -m "feat: add neovim"
-git commit -m "feat(packages): add development tools"
-git commit -m "fix: correct flatpak path"
-git commit -m "docs: update README installation steps"
-git commit -m "chore: update dependencies"
-```
-
-**For breaking changes:**
-```bash
-git commit -m "feat!: migrate to new base image"
-# OR
-git commit -m "feat: migrate to new base image
-
-BREAKING CHANGE: Users must reinstall from scratch"
-```
-
-**See `.github/commit-convention.md` for detailed examples and best practices.**
-
-**Process**:
-```bash
-# Development
-git checkout testing
-git commit -m "feat: add neovim"  # MUST use conventional commits format
-git push origin testing
-# → Triggers build-testing.yml → :testing image
-# → Release Please updates PR
-
-# Release
-# Merge Release Please PR on GitHub
-# → Creates GitHub Release with version tag
-# → Auto-merges testing → main
-# → Triggers build.yml → :stable image
-```
 
 **Workflows**:
 - `build-testing.yml` - Builds `:testing` on push to testing
 - `release-please.yml` - Auto-creates/updates release PRs, auto-merges to main
 - `build.yml` - Builds `:stable` on main
 - `renovate.json` - Monitors base image updates (every 6 hours)
-- `ghcr-pruner.yml` - Deletes images >90 days (weekly)
+- `clean.yml` - Deletes images >90 days (weekly)
 
 ### 8. Image Signing (Optional, Recommended for Production)
 
@@ -572,10 +464,6 @@ Rechunker optimizes container layer distribution for better resumability.
 ---
 
 ## Image Tags Reference
-
-**Testing branch** (development):
-- `testing` - Latest testing build
-- `testing.20250129` - Datestamped testing
 
 **Main branch** (production releases):
 - `stable` - Latest stable release (recommended)
