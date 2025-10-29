@@ -28,10 +28,10 @@
 - `fix:` - Bug fixes (patch version bump)
 - `docs:` - Documentation only changes (no version bump)
 - `chore:` - Maintenance tasks (no version bump)
-- `build:` - Build system changes
-- `ci:` - CI/CD workflow changes
-- `refactor:` - Code refactoring
-- `test:` - Adding or updating tests
+- `build:` - Build system changes (no version bump)
+- `ci:` - CI/CD workflow changes (no version bump)
+- `refactor:` - Code refactoring (no version bump)
+- `test:` - Adding or updating tests (no version bump)
 
 **Breaking changes:**
 - Add `!` after type: `feat!:` or `fix!:`
