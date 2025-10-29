@@ -68,40 +68,16 @@ Important: Change `finpilot` to your repository name in these 5 files:
 4. `artifacthub-repo.yml` (line 5): `repositoryID: your-repo-name`
 5. `custom/ujust/README.md` (~line 175): `localhost/your-repo-name:latest`
 
-### 3. Set Up Signing
-
-Generate a signing key for your images:
-
-```bash
-cosign generate-key-pair
-```
-
-This creates two files:
-- `cosign.key` (private key) - Keep this secret
-- `cosign.pub` (public key) - Commit this to your repository
-
-Add the private key to GitHub Secrets:
-1. Copy the entire contents of `cosign.key`
-2. Go to your repository on GitHub
-3. Navigate to Settings → Secrets and variables → Actions ([GitHub docs](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository))
-4. Click "New repository secret"
-5. Name: `SIGNING_SECRET`
-6. Value: Paste the entire contents of `cosign.key`
-7. Click "Add secret"
-
-Replace the contents of `cosign.pub` with your public key:
-1. Open `cosign.pub` in your repository
-2. Replace the placeholder with your actual public key
-3. Commit and push the change
-
-Important: Never commit `cosign.key` to the repository. It's already in `.gitignore`.
-
-### 4. Enable GitHub Actions
+### 3. Enable GitHub Actions
 
 - Go to the "Actions" tab in your repository
 - Click "I understand my workflows, go ahead and enable them"
 
-### 5. Customize Your Image
+Your first build will start automatically! 
+
+Note: Image signing is disabled by default. Your images will build successfully without any signing keys. Once you're ready for production, see "Optional: Enable Image Signing" below.
+
+### 4. Customize Your Image
 
 Choose your base image in `Containerfile` (line 23):
 ```dockerfile
@@ -132,6 +108,52 @@ Switch to your image:
 sudo bootc switch ghcr.io/your-username/your-repo-name:latest
 sudo systemctl reboot
 ```
+
+## Optional: Enable Image Signing
+
+Image signing is disabled by default to let you start building immediately. However, signing is strongly recommended for production use.
+
+### Why Sign Images?
+
+- Verify image authenticity and integrity
+- Prevent tampering and supply chain attacks
+- Required for some enterprise/security-focused deployments
+- Industry best practice for production images
+
+### Setup Instructions
+
+1. Generate signing keys:
+```bash
+cosign generate-key-pair
+```
+
+This creates two files:
+- `cosign.key` (private key) - Keep this secret
+- `cosign.pub` (public key) - Commit this to your repository
+
+2. Add the private key to GitHub Secrets:
+   - Copy the entire contents of `cosign.key`
+   - Go to your repository on GitHub
+   - Navigate to Settings → Secrets and variables → Actions ([GitHub docs](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository))
+   - Click "New repository secret"
+   - Name: `SIGNING_SECRET`
+   - Value: Paste the entire contents of `cosign.key`
+   - Click "Add secret"
+
+3. Replace the contents of `cosign.pub` with your public key:
+   - Open `cosign.pub` in your repository
+   - Replace the placeholder with your actual public key
+   - Commit and push the change
+
+4. Enable signing in the workflow:
+   - Edit `.github/workflows/build.yml`
+   - Find the "OPTIONAL: Image Signing with Cosign" section.
+   - Uncomment the steps to install Cosign and sign the image (remove the `#` from the beginning of each line in that section).
+   - Commit and push the change
+
+5. Your next build will produce signed images!
+
+Important: Never commit `cosign.key` to the repository. It's already in `.gitignore`.
 
 ## Detailed Guides
 
@@ -165,12 +187,12 @@ just run-vm-qcow2       # Test in browser-based VM
 ## Security
 
 This template provides:
-- Image signing with cosign for cryptographic verification
 - SBOM generation (Software Bill of Materials)
 - Provenance attestation with build metadata
 - Automated security updates via Renovate
+- Optional image signing with cosign for cryptographic verification (see "Optional: Enable Image Signing" section)
 
-Your images are signed and can be verified with:
+Once signing is enabled, your images can be verified with:
 ```bash
 cosign verify --key cosign.pub ghcr.io/your-username/your-repo-name:latest
 ```

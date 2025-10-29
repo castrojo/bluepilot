@@ -76,9 +76,15 @@ The assistant should then:
    - `artifacthub-repo.yml` (line 5): `repositoryID: new-repo-name`
    - `custom/ujust/README.md` (~line 175): `localhost/new-repo-name:latest`
 
-4. **Never leave `finpilot` as the name** in a templated repository - it's only an example
+4. **Explain that image signing is STRONGLY RECOMMENDED** and disabled by default
+   - First builds will succeed without signing keys
+   - This allows immediate testing and development
+   - Strongly recommend enabling signing for production
+   - Point user to "Optional: Enable Image Signing" section in README
 
-**This is NOT optional.** The first action when someone uses this template is to rename the project from `finpilot` to their repository name.
+5. **Never leave `finpilot` as the name** in a templated repository - it's only an example
+
+**This is NOT optional.** The first action when someone uses this template is to rename the project from `finpilot` to their repository name and to inform them that image signing is optional but recommended for production.
 
 ## CRITICAL: Follow Bluefin Conventions
 
