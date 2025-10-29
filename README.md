@@ -24,12 +24,11 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
   - `testing` branch builds `:testing` images
   - `main` branch builds `:stable` images
   - Automated releases with [Release Please](https://github.com/googleapis/release-please)
-- Automated validation workflows for pull requests:
-  - Brewfile syntax validation
-  - Flatpak availability checks
-  - Justfile formatting validation
-  - ShellCheck linting for build scripts
-  - Renovate config validation
+- Validates your files on pull requests so you never break a build:
+  - Brewfile, Justfile, ShellCheck, Renovate config, and it'll even check to make sure the flatpak you add exists on FlatHub
+- Production Grade Features
+  - Container signing, SBOM Generation, and layer rechunking.
+  - See checklist below to enable these as they take some manual configuration
 
 ### Homebrew Integration
 - Pre-configured Brewfiles for easy package installation and customization
