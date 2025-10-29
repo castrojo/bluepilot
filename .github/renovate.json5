@@ -26,7 +26,7 @@
         '^Justfile$',
       ],
       matchStrings: [
-        'run_args\\+=\\((?<packageName>[a-zA-Z0-9._/-]+)\\)',
+        'run_args\\+=\\((?<packageName>[a-zA-Z0-9._:/-]+)\\)',
       ],
       datasourceTemplate: 'docker',
       versioningTemplate: 'docker',
