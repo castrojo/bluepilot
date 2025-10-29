@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.1.0](https://github.com/castrojo/finpilot/compare/v2.0.0...v2.1.0) (2025-10-29)
+
+
+### Features
+
+* add helix text editor to Brewfile ([d37a626](https://github.com/castrojo/finpilot/commit/d37a6269ea8f6f363b7d9fa9b3f97981a8e61d25))
+* add mosh to system packages ([7bbef77](https://github.com/castrojo/finpilot/commit/7bbef7756d0579d74fb499afd40e9d8647fadc17))
+* add Spotify flatpak to default preinstall ([2319f6c](https://github.com/castrojo/finpilot/commit/2319f6ceaf27ad136770d9ba81781a0fb6cb2914))
+
+
+### Bug Fixes
+
+* disable SBOM generation by default to match main workflow ([a23400c](https://github.com/castrojo/finpilot/commit/a23400c63d1bbbf4a6b61e0ec81c7e83b945dd09))
+* update attest-sbom action SHA and add PR triggers ([06783e9](https://github.com/castrojo/finpilot/commit/06783e9e17860355bb496fe6f90e7b78fd6c3266))
+
+
+### Miscellaneous Chores
+
+* disable CHANGELOG.md generation in release-please ([189d333](https://github.com/castrojo/finpilot/commit/189d333fa438bbf8f967e5c23c251a65208ece57))
+* disable rechunker by default to match main workflow ([660753a](https://github.com/castrojo/finpilot/commit/660753a229a98f13c4124eb263b3c8e37f61a7bb))
+
 ## [2.0.0](https://github.com/castrojo/finpilot/compare/v1.0.0...v2.0.0) (2025-10-29)
 
 
