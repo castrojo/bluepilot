@@ -1,41 +1,36 @@
 # finpilot
 
-A template for building custom bootc operating system images based on [Universal Blue](https://universal-blue.org/).
+A template for building custom bootc operating system images based on the lessons from [Universal Blue](https://universal-blue.org/) and [Bluefin](https://projectbluefin.io). It is designed and documented for use with Copilot to ease maintenance.
 
 ## What's Included
 
-This template provides everything you need to create a custom Linux operating system:
-
 ### Build System
-- Automated builds via GitHub Actions on every commit
+- Automated builds via GitHub Actions on every commit you make
 - Signed images with cosign for security
-- Version tracking with Renovate for automatic base image updates
+- Version tracking with Renovate for automatic base image updates, builds only when the base image upstream is updated
 - SBOM generation for supply chain security
 - Image validation with `bootc container lint`
 
 ### Homebrew Integration
-- Pre-configured Brewfiles for easy package installation
-- Includes curated collections: development tools, fonts, CLI utilities
-- Users install packages at runtime with `brew bundle`
+- Pre-configured Brewfiles for easy package installation and customization
+- Includes curated collections: development tools, fonts, CLI utilities. Go nuts.
+- Users install packages at runtime with `brew bundle`, aliased to premade `ujust commands`
 - See [custom/brew/README.md](custom/brew/README.md) for details
 
 ### Flatpak Support
-- Pre-configured list of GUI applications
+- Ship your favorite flatpaks
 - Automatically installed on first boot after user setup
-- Includes browsers, productivity apps, and GNOME utilities
 - See [custom/flatpaks/README.md](custom/flatpaks/README.md) for details
 
 ### Rechunker
 - Optimizes container image layer distribution for faster downloads
-- Reduces initial download size and improves update efficiency
 - Automatically enabled in GitHub Actions workflow
 - Based on [hhd-dev/rechunk](https://github.com/hhd-dev/rechunk)
 - No manual configuration required
 
 ### ujust Commands
 - User-friendly command shortcuts via `ujust`
-- Pre-configured examples for app installation and system maintenance
-- Easily customizable for your specific needs
+- Pre-configured examples for app installation and system maintenance for you to customize
 - See [custom/ujust/README.md](custom/ujust/README.md) for details
 
 ### Build Scripts
