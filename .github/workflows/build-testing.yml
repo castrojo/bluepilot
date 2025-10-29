@@ -6,6 +6,11 @@ on:
       - testing
     paths-ignore:
       - '**/README.md'
+  pull_request:
+    branches:
+      - testing
+    paths-ignore:
+      - '**/README.md'
   workflow_dispatch:
 
 env:
@@ -151,7 +156,7 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Attest SBOM
-        uses: actions/attest-sbom@6d1e1c9c320c610e7af8748a7b5ddf79168fe43d # v2.0.0
+        uses: actions/attest-sbom@4651f806c01d8637787e274ac3bdf724ef169f34 # v3.0.0
         if: github.ref == 'refs/heads/testing'
         id: attest-sbom
         with:
