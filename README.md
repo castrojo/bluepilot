@@ -36,10 +36,10 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 - See [custom/flatpaks/README.md](custom/flatpaks/README.md) for details
 
 ### Rechunker
-- Optimizes container image layer distribution for better resumability
+- Optimizes container image layer distribution for better download resumability
 - Enabled by default in GitHub Actions workflow
 - Based on [hhd-dev/rechunk](https://github.com/hhd-dev/rechunk) v1.2.4
-- Processes each build to prevent single huge layers
+- Processes each build to prevent single large layers that could cause download issues
 - No manual configuration required
 
 ### ujust Commands
