@@ -47,7 +47,7 @@
       "labels": ["renovate", "automerge"],
     },
     {
-      "description": "Disable automerge for rechunk updates to allow manual review",
+      "description": "Disable automerge for all rechunk updates to allow manual review",
       "matchUpdateTypes": ["major", "minor", "patch", "digest", "pinDigest"],
       "matchPackageNames": ["ghcr.io/hhd-dev/rechunk"],
       "automerge": false
