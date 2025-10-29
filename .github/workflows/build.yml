@@ -187,21 +187,7 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
 
       # OPTIONAL: Image Signing with Cosign
-      # Signing is DISABLED by default to allow the repository to build successfully on first use.
-      # This prevents build failures due to missing SIGNING_SECRET.
-      #
-      # To enable image signing (RECOMMENDED for production):
-      # 1. Generate signing keys: cosign generate-key-pair
-      # 2. Add cosign.key contents to GitHub Secrets as SIGNING_SECRET
-      # 3. Commit cosign.pub to your repository
-      # 4. Uncomment the signing steps below
-      # 5. See README.md "Optional: Enable Image Signing" section for detailed instructions
-      #
-      # Why sign images?
-      # - Verify image authenticity and integrity
-      # - Prevent tampering and supply chain attacks
-      # - Required for some enterprise/security-focused deployments
-      # - Best practice for production images
+      # Signing is disabled by default. To enable, see README.md "Optional: Enable Image Signing" section.
 
       # - name: Install Cosign
       #   uses: sigstore/cosign-installer@d7543c93d881b35a8faa02e8e3605f69b7a1ce62 # v3.10.0
