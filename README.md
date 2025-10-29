@@ -18,11 +18,15 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 
 ### Build System
 - Automated builds via GitHub Actions on every commit you make
-- Signed images with cosign for security
+- Signed images with cosign for security (optional, see setup instructions)
 - Version tracking with Renovate for automatic base image updates, builds only when the base image upstream is updated
 - SBOM generation for supply chain security
 - Image validation with `bootc container lint`
 - Automatic cleanup of old images (90+ days) to save storage space
+- Release workflow with testing branch - test changes before production
+  - `testing` branch builds `:testing` images
+  - `main` branch builds `:latest` images
+  - Automated releases with [Release Please](https://github.com/googleapis/release-please)
 
 ### Homebrew Integration
 - Pre-configured Brewfiles for easy package installation and customization
@@ -200,3 +204,32 @@ cosign verify --key cosign.pub ghcr.io/your-username/your-repo-name:latest
 ---
 
 Template maintained by [Universal Blue Project](https://universal-blue.org/)
+
+## Release Workflow
+
+This template includes an automated release workflow using [Release Please](https://github.com/googleapis/release-please):
+
+- **Testing branch** (`testing`) - Push your changes here for testing
+  - Builds images with `:testing` tag
+  - Release Please tracks all changes
+- **Main branch** (`main`) - Production releases only
+  - Builds images with `:latest` tag
+  - Only updated via Release Please merges
+
+### Quick Start
+
+1. Push to `testing` branch using [Conventional Commits](https://www.conventionalcommits.org/):
+   ```bash
+   git commit -m "feat: add new feature"
+   git push origin testing
+   ```
+
+2. Release Please creates/updates a release PR automatically
+
+3. Merge the release PR when ready:
+   - Creates a GitHub Release
+   - Automatically merges to `main`
+   - Builds `:latest` image
+
+See [RELEASE_WORKFLOW.md](RELEASE_WORKFLOW.md) for detailed documentation.
+
