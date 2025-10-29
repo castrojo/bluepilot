@@ -34,6 +34,7 @@ echo "::group:: Install Packages"
 # Install packages using dnf5
 # Example: dnf5 install -y tmux
 
+# Install tmux and micro packages
 dnf5 install -y tmux micro
 
 # Example using COPR with isolated pattern:
