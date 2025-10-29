@@ -63,12 +63,25 @@ Generate a signing key for your images:
 cosign generate-key-pair
 ```
 
-Add the private key (`cosign.key` contents) to GitHub:
-- Go to: Settings → Secrets and variables → Actions
-- Create secret: `SIGNING_SECRET`
-- Paste the entire contents of `cosign.key`
+This creates two files:
+- `cosign.key` (private key) - Keep this secret
+- `cosign.pub` (public key) - Commit this to your repository
 
-Note: Never commit `cosign.key` to the repository.
+Add the private key to GitHub Secrets:
+1. Copy the entire contents of `cosign.key`
+2. Go to your repository on GitHub
+3. Navigate to Settings → Secrets and variables → Actions ([GitHub docs](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository))
+4. Click "New repository secret"
+5. Name: `SIGNING_SECRET`
+6. Value: Paste the entire contents of `cosign.key`
+7. Click "Add secret"
+
+Replace the contents of `cosign.pub` with your public key:
+1. Open `cosign.pub` in your repository
+2. Replace the placeholder with your actual public key
+3. Commit and push the change
+
+Important: Never commit `cosign.key` to the repository. It's already in `.gitignore`.
 
 ### 4. Enable GitHub Actions
 
