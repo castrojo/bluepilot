@@ -26,7 +26,7 @@
         '^Justfile$',
       ],
       matchStrings: [
-        'run_args\\+=\\((?<packageName>[a-z0-9./-]+)\\)',
+        'run_args\\+=\\((?<packageName>[a-zA-Z0-9._/-]+)\\)',
       ],
       datasourceTemplate: 'docker',
       versioningTemplate: 'docker',
@@ -47,8 +47,8 @@
       "labels": ["renovate", "automerge"],
     },
     {
-      "description": "Disable automerge for rechunk action updates to allow manual review",
-      "matchUpdateTypes": ["digest", "pinDigest"],
+      "description": "Disable automerge for rechunk updates to allow manual review",
+      "matchUpdateTypes": ["major", "minor", "patch", "digest", "pinDigest"],
       "matchPackageNames": ["ghcr.io/hhd-dev/rechunk"],
       "automerge": false
     },
