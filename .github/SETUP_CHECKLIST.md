@@ -61,7 +61,7 @@ Signing is disabled by default to allow initial builds to succeed.
 
 - [ ] **Enable Signing in Workflow**
   - [ ] Edit `.github/workflows/build.yml`
-  - [ ] Uncomment the cosign signing steps (lines 200-220)
+  - [ ] Uncomment the cosign signing steps
   - [ ] Edit `.github/workflows/build-testing.yml`
   - [ ] Uncomment the cosign signing steps if desired
   - [ ] Commit and push changes
