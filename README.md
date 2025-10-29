@@ -27,6 +27,12 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
   - `testing` branch builds `:testing` images
   - `main` branch builds `:stable` images
   - Automated releases with [Release Please](https://github.com/googleapis/release-please)
+- Automated validation workflows for pull requests:
+  - Brewfile syntax validation
+  - Flatpak availability checks
+  - Justfile formatting validation
+  - ShellCheck linting for build scripts
+  - Renovate config validation
 
 ### Homebrew Integration
 - Pre-configured Brewfiles for easy package installation and customization
