@@ -20,6 +20,7 @@ Make a new bootc custom operating system using this template named after the rep
 - Version tracking with Renovate for automatic base image updates, builds only when the base image upstream is updated
 - SBOM generation for supply chain security
 - Image validation with `bootc container lint`
+- Automatic cleanup of old images (90+ days) to save storage space
 
 ### Homebrew Integration
 - Pre-configured Brewfiles for easy package installation and customization
