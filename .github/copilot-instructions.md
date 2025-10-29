@@ -40,9 +40,9 @@
 **CRITICAL**: Add this section near the top of README.md (after the title/intro, before detailed docs):
 
 ```markdown
-## What's Different from [Base Image Name]
+## What Makes this Raptor Different?
 
-This image is based on [Bluefin/Bazzite/Aurora/etc] and includes these customizations:
+Here are the changes from [Base Image Name]. This image is based on [Bluefin/Bazzite/Aurora/etc] and includes these customizations:
 
 ### Added Packages (Build-time)
 - **System packages**: tmux, micro, mosh - [brief explanation of why]
