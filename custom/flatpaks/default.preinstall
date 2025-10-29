@@ -75,6 +75,9 @@ Branch=stable
 [Flatpak Preinstall com.github.rafostar.Clapper]
 Branch=stable
 
+[Flatpak Preinstall com.spotify.Client]
+Branch=stable
+
 # System Utilities
 [Flatpak Preinstall com.github.tchx84.Flatseal]
 Branch=stable
