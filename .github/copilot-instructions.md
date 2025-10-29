@@ -37,7 +37,7 @@
    - `artifacthub-repo.yml` (line 5): `repositoryID: new-repo-name`
    - `custom/ujust/README.md` (~line 175): `localhost/new-repo-name:latest`
 
-4. **Explain that image signing is OPTIONAL** and disabled by default
+4. **Explain that image signing is STRONGLY RECOMMENDED** and disabled by default
    - First builds will succeed without signing keys
    - This allows immediate testing and development
    - Strongly recommend enabling signing for production
