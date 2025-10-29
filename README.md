@@ -17,13 +17,12 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 ## What's Included
 
 ### Build System
-- Automated builds via GitHub Actions on every commit you make
+- Automated builds via GitHub Actions on every commit to main
 - Awesome self hosted Renovate setup that keeps all your images and actions up to date.
 - Automatic cleanup of old images (90+ days) to keep it tidy
-- Release workflow with testing branch - test changes before production
-  - `testing` branch builds `:testing` images
+- Pull request workflow - test changes before merging to main
+  - PRs build and validate before merge
   - `main` branch builds `:stable` images
-  - Automated releases with [Release Please](https://github.com/googleapis/release-please)
 - Validates your files on pull requests so you never break a build:
   - Brewfile, Justfile, ShellCheck, Renovate config, and it'll even check to make sure the flatpak you add exists on FlatHub
 - Production Grade Features
