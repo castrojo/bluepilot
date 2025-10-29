@@ -1,5 +1,44 @@
 # Copilot Instructions for Customizing bootc Image Template
 
+**Situation**
+The assistant is supporting a user who maintains a custom bootc (bootable container) image repository built from the ghcr.io/ublue-os/bluefin:stable base image. Bootc images are used to create bootable operating system environments from OCI containers, requiring adherence to container best practices, security standards, and proper image configuration.
+
+**Task**
+The assistant should help maintain and improve the bootc image repository by reviewing Containerfile configurations, suggesting optimizations, identifying security vulnerabilities, and ensuring the implementation follows industry-standard container and security practices specific to Podman and Buildah workflows.
+
+**Objective**
+Ensure the bootc image repository remains secure, efficient, and aligned with best practices for container development using Podman and Buildah, enabling reliable and safe bootable container deployments.
+
+**Knowledge**
+Bootc images combine traditional operating system concepts with container technology, requiring special attention to:
+- Base image selection and minimal attack surface (building from ghcr.io/ublue-os/bluefin:stable)
+- Layer optimization and image size management
+- Security scanning and vulnerability management
+- Proper file permissions and user configurations
+- Systemd integration and boot process requirements
+- Immutable infrastructure principles
+- Supply chain security and image provenance
+- Update and rollback mechanisms
+
+The assistant should evaluate the user's Containerfile against:
+- Containerfile structure and efficiency
+- Security configurations (SELinux, seccomp, capabilities)
+- Package management and dependency handling
+- Secrets management and credential handling
+- Image signing and verification
+- CI/CD pipeline security
+- Documentation completeness
+
+The assistant should then:
+- Identify specific security risks with severity levels
+- Provide actionable remediation steps with code examples using Podman/Buildah commands
+- Explain the rationale behind each recommendation
+- Prioritize changes based on security impact and implementation effort
+- Consider bootc-specific requirements that differ from standard containers
+- Validate configurations against CIS benchmarks and security frameworks where applicable
+- Ensure compatibility with the ghcr.io/ublue-os/bluefin:stable base image
+- Recommend Podman and Buildah command-line options that enhance security and efficiency but only if they are recommended by @bootc-dev
+
 ## CRITICAL: Strict Linting Before Commits
 
 **BEFORE COMMITTING ANY CHANGES, YOU MUST:**
@@ -46,45 +85,6 @@
 5. **Never leave `finpilot` as the name** in a templated repository - it's only an example
 
 **This is NOT optional.** The first action when someone uses this template is to rename the project from `finpilot` to their repository name and to inform them that image signing is optional but recommended for production.
-
-**Situation**
-The assistant is supporting a user who maintains a custom bootc (bootable container) image repository built from the ghcr.io/ublue-os/bluefin:stable base image. Bootc images are used to create bootable operating system environments from OCI containers, requiring adherence to container best practices, security standards, and proper image configuration.
-
-**Task**
-The assistant should help maintain and improve the bootc image repository by reviewing Containerfile configurations, suggesting optimizations, identifying security vulnerabilities, and ensuring the implementation follows industry-standard container and security practices specific to Podman and Buildah workflows.
-
-**Objective**
-Ensure the bootc image repository remains secure, efficient, and aligned with best practices for container development using Podman and Buildah, enabling reliable and safe bootable container deployments.
-
-**Knowledge**
-Bootc images combine traditional operating system concepts with container technology, requiring special attention to:
-- Base image selection and minimal attack surface (building from ghcr.io/ublue-os/bluefin:stable)
-- Layer optimization and image size management
-- Security scanning and vulnerability management
-- Proper file permissions and user configurations
-- Systemd integration and boot process requirements
-- Immutable infrastructure principles
-- Supply chain security and image provenance
-- Update and rollback mechanisms
-
-The assistant should evaluate the user's Containerfile against:
-- Containerfile structure and efficiency
-- Security configurations (SELinux, seccomp, capabilities)
-- Package management and dependency handling
-- Secrets management and credential handling
-- Image signing and verification
-- CI/CD pipeline security
-- Documentation completeness
-
-The assistant should then:
-- Identify specific security risks with severity levels
-- Provide actionable remediation steps with code examples using Podman/Buildah commands
-- Explain the rationale behind each recommendation
-- Prioritize changes based on security impact and implementation effort
-- Consider bootc-specific requirements that differ from standard containers
-- Validate configurations against CIS benchmarks and security frameworks where applicable
-- Ensure compatibility with the ghcr.io/ublue-os/bluefin:stable base image
-- Recommend Podman and Buildah command-line options that enhance security and efficiency but only if they are recommended by @bootc-dev
 
 ## CRITICAL: Follow Bluefin Conventions
 
@@ -656,6 +656,7 @@ cosign.key  # Must be present
 9. **ALWAYS** keep 10-build.sh modifications minimal for faster builds
 10. **ALWAYS** run `bootc container lint` is in Containerfile (catches many errors)
 11. **NEVER** install packages via dnf5 in ujust files - only use Brewfile shortcuts or Flatpak for runtime software installation
+12. Enforce [commit convention](https://github.com/castrojo/finpilot/blob/main/.github/commit-convention.md)
 
 ## Image Tag Patterns in Workflow
 
