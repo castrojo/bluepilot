@@ -4,11 +4,13 @@ A template for building custom bootc operating system images based on the lesson
 
 > Be the one who moves, not the one who is moved.
 
-## Get Started
+## Guided Copilot Mode
 
-1. Click the green button use this as a template and create a new repository
+Here are the steps to guide copilot to make your own repo, or just use it like a regular image template.
+
+1. Click the green "Use this as a template" button and create a new repository
 2. Select your owner, pick a repo name for your OS, and a description
-3. In the "Jumpstart your project with Copilot (optional)" add this, modify to your liking):
+3. In the "Jumpstart your project with Copilot (optional)" add this, modify to your liking:
 
 ```
 Use @castrojo/finpilot as a template, name the OS the repository name. Ensure the entire operating system is bootstrapped. Ensure all github actions are enabled and running.  Ensure the README has the github setup instructions for cosign and the other steps required to finish the task.
