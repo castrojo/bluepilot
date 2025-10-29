@@ -18,9 +18,9 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 
 ### Build System
 - Automated builds via GitHub Actions on every commit you make
-- Signed images with cosign for security (optional, see setup instructions)
+- Optional: Signed images with cosign for security (see production setup)
 - Version tracking with Renovate for automatic base image updates, builds only when the base image upstream is updated
-- SBOM generation for supply chain security
+- Optional: SBOM generation for supply chain security (see production setup)
 - Image validation with `bootc container lint`
 - Automatic cleanup of old images (90+ days) to save storage space
 - Release workflow with testing branch - test changes before production
@@ -160,6 +160,55 @@ This creates two files:
 
 Important: Never commit `cosign.key` to the repository. It's already in `.gitignore`.
 
+## Love Your Image? Let's Go to Production
+
+Ready to take your custom OS to production? Enable these features for enhanced security, reliability, and performance:
+
+### Production Checklist
+
+- [ ] **Enable Image Signing** (Recommended)
+  - Provides cryptographic verification of your images
+  - Prevents tampering and ensures authenticity
+  - See "Optional: Enable Image Signing" section above for setup instructions
+  - Status: **Disabled by default** to allow immediate testing
+
+- [ ] **Enable Rechunker** (Recommended)
+  - Optimizes image layer distribution for better download resumability
+  - Improves reliability for users with unstable connections
+  - To enable:
+    1. Edit `.github/workflows/build.yml`
+    2. Find the "Rechunk (OPTIONAL)" section around line 121
+    3. Uncomment the "Run Rechunker" step
+    4. Uncomment the "Load in podman and tag" step
+    5. Comment out the "Tag for registry" step that follows
+    6. Commit and push
+  - Status: **Disabled by default** for faster initial builds
+
+- [ ] **Enable SBOM Attestation** (Recommended)
+  - Generates Software Bill of Materials for supply chain security
+  - Provides transparency about what's in your image
+  - Requires image signing to be enabled first
+  - To enable:
+    1. First complete image signing setup above
+    2. Edit `.github/workflows/build.yml`
+    3. Find the "OPTIONAL: SBOM Attestation" section around line 232
+    4. Uncomment the "Add SBOM Attestation" step
+    5. Commit and push
+  - Status: **Disabled by default** (requires signing first)
+
+### After Enabling Production Features
+
+Your workflow will:
+- Sign all images with your key
+- Generate and attach SBOMs
+- Optimize layers for better distribution
+- Provide full supply chain transparency
+
+Users can verify your images with:
+```bash
+cosign verify --key cosign.pub ghcr.io/your-username/your-repo-name:stable
+```
+
 ## Detailed Guides
 
 - [Homebrew/Brewfiles](custom/brew/README.md) - Runtime package management
@@ -191,16 +240,13 @@ just run-vm-qcow2       # Test in browser-based VM
 
 ## Security
 
-This template provides:
-- SBOM generation (Software Bill of Materials)
-- Provenance attestation with build metadata
+This template provides security features for production use:
+- Optional SBOM generation (Software Bill of Materials) for supply chain transparency
+- Optional image signing with cosign for cryptographic verification
 - Automated security updates via Renovate
-- Optional image signing with cosign for cryptographic verification (see "Optional: Enable Image Signing" section)
+- Build provenance tracking
 
-Once signing is enabled, your images can be verified with:
-```bash
-cosign verify --key cosign.pub ghcr.io/your-username/your-repo-name:stable
-```
+These security features are disabled by default to allow immediate testing. When you're ready for production, see the "Love Your Image? Let's Go to Production" section above to enable them.
 
 ---
 
