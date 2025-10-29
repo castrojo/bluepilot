@@ -1,5 +1,5 @@
 export image_name := env("IMAGE_NAME", "finpilot")
-export default_tag := env("DEFAULT_TAG", "latest")
+export default_tag := env("DEFAULT_TAG", "stable")
 export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest@sha256:903c01d110b8533f8891f07c69c0ba2377f8d4bc7e963311082b7028c04d529d")
 
 alias build-vm := build-qcow2

@@ -9,7 +9,7 @@ The release workflow is designed to support a **testing → main** branching mod
 1. **Development happens on `testing` branch** - Maintainers push changes here
 2. **Release Please tracks changes** - Automatically creates/updates a release PR
 3. **Merge the release PR** - Triggers automatic merge to `main` branch
-4. **Both branches build images** - `testing` gets `:testing` tag, `main` gets `:latest` tag
+4. **Both branches build images** - `testing` gets `:testing` tag, `main` gets `:stable` tag
 
 ## Workflow
 
@@ -91,7 +91,7 @@ When you're ready to release:
 2. **Merge the PR** - This triggers:
    - Creates a GitHub Release with the changelog
    - Automatically merges `testing` → `main`
-   - Triggers a build of the `main` branch (`:latest` tag)
+   - Triggers a build of the `main` branch (`:stable` tag)
 
 **Important:** Do NOT manually merge `testing` to `main`. Always use the Release Please PR.
 
@@ -160,7 +160,7 @@ Tracks current version:
 
 ### `.github/workflows/build.yml`
 - **Trigger:** Push to `main` branch (includes Release Please merges)
-- **Actions:** Builds and publishes `:latest` image
+- **Actions:** Builds and publishes `:stable` image
 
 ## Example Workflow
 
@@ -185,7 +185,7 @@ git push origin testing
 # 2. Merge PR
 # → Creates GitHub Release v1.1.0
 # → Merges testing → main
-# → Main image builds with :latest tag
+# → Main image builds with :stable tag
 ```
 
 ## Troubleshooting

@@ -25,7 +25,7 @@ Use @castrojo/finpilot as a template, name the OS the repository name. Ensure th
 - Automatic cleanup of old images (90+ days) to save storage space
 - Release workflow with testing branch - test changes before production
   - `testing` branch builds `:testing` images
-  - `main` branch builds `:latest` images
+  - `main` branch builds `:stable` images
   - Automated releases with [Release Please](https://github.com/googleapis/release-please)
 
 ### Homebrew Integration
@@ -71,7 +71,7 @@ Important: Change `finpilot` to your repository name in these 5 files:
 2. `Justfile` (line 1): `export image_name := "your-repo-name"`
 3. `README.md` (line 1): `# your-repo-name`
 4. `artifacthub-repo.yml` (line 5): `repositoryID: your-repo-name`
-5. `custom/ujust/README.md` (~line 175): `localhost/your-repo-name:latest`
+5. `custom/ujust/README.md` (~line 175): `localhost/your-repo-name:stable`
 
 ### 3. Enable GitHub Actions
 
@@ -110,7 +110,7 @@ Commit and push your changes. GitHub Actions will build your image automatically
 
 Switch to your image:
 ```bash
-sudo bootc switch ghcr.io/your-username/your-repo-name:latest
+sudo bootc switch ghcr.io/your-username/your-repo-name:stable
 sudo systemctl reboot
 ```
 
@@ -199,7 +199,7 @@ This template provides:
 
 Once signing is enabled, your images can be verified with:
 ```bash
-cosign verify --key cosign.pub ghcr.io/your-username/your-repo-name:latest
+cosign verify --key cosign.pub ghcr.io/your-username/your-repo-name:stable
 ```
 
 ---
@@ -214,7 +214,7 @@ This template includes an automated release workflow using [Release Please](http
   - Builds images with `:testing` tag
   - Release Please tracks all changes
 - **Main branch** (`main`) - Production releases only
-  - Builds images with `:latest` tag
+  - Builds images with `:stable` tag
   - Only updated via Release Please merges
 
 ### Quick Start
@@ -230,7 +230,7 @@ This template includes an automated release workflow using [Release Please](http
 3. Merge the release PR when ready:
    - Creates a GitHub Release
    - Automatically merges to `main`
-   - Builds `:latest` image
+   - Builds `:stable` image
 
 See [RELEASE_WORKFLOW.md](RELEASE_WORKFLOW.md) for detailed documentation.
 

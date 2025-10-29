@@ -94,7 +94,7 @@ Signing is disabled by default to allow initial builds to succeed.
 - [ ] **Create First Release**
   - [ ] Wait for Release Please to create PR
   - [ ] Review and merge the release PR
-  - [ ] Verify merge to `main` and `:latest` image build
+  - [ ] Verify merge to `main` and `:stable` image build
 
 ## Test Your Image
 
@@ -106,7 +106,7 @@ Signing is disabled by default to allow initial builds to succeed.
 
 - [ ] **Test Production Image** (after first release)
   ```bash
-  sudo bootc switch --transport registry ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:latest
+  sudo bootc switch --transport registry ghcr.io/YOUR_USERNAME/YOUR_REPO_NAME:stable
   sudo systemctl reboot
   ```
 

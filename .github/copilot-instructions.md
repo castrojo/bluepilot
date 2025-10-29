@@ -63,7 +63,7 @@ Signing is DISABLED by default. First builds succeed immediately. Enable later f
 └── .github/workflows/    # CI/CD
     ├── build-testing.yml      # Builds :testing on push to testing
     ├── release-please.yml     # Auto-creates release PRs, merges to main
-    ├── build.yml              # Builds :latest on main
+    ├── build.yml              # Builds :stable on main
     └── ghcr-pruner.yml        # Deletes images >90 days old
 ```
 
@@ -86,7 +86,7 @@ Signing is DISABLED by default. First builds succeed immediately. Enable later f
 
 ### Branch Strategy
 - **testing** = Development branch. All work happens here. Builds `:testing` images.
-- **main** = Production releases ONLY. Never push directly. Builds `:latest` images.
+- **main** = Production releases ONLY. Never push directly. Builds `:stable` images.
 - **Release Please** = Auto-creates PRs, auto-merges testing→main on PR merge.
 - **Conventional Commits** = REQUIRED. `feat:`, `fix:`, `chore:`, etc.
 
@@ -103,7 +103,7 @@ Signing is DISABLED by default. First builds succeed immediately. Enable later f
 | Switch base image | `Containerfile` line 5 → `FROM ghcr.io/ublue-os/bluefin:stable` |
 | Test locally | `just build && just build-qcow2 && just run-vm-qcow2` |
 | Deploy (testing) | `sudo bootc switch ghcr.io/user/repo:testing` |
-| Deploy (production) | `sudo bootc switch ghcr.io/user/repo:latest` |
+| Deploy (production) | `sudo bootc switch ghcr.io/user/repo:stable` |
 | Make release | Push to testing with `feat:`/`fix:` → merge Release Please PR |
 | Enable service | `build/10-build.sh` → `systemctl enable service.name` |
 | Add COPR | `build/10-build.sh` → enable → install → **DISABLE** |
@@ -250,7 +250,7 @@ Branch=stable
 [customizations.installer.kickstart]
 contents = """
 %post
-bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:latest
+bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:stable
 %end
 """
 ```
@@ -261,7 +261,7 @@ bootc switch --mutate-in-place --transport registry ghcr.io/USERNAME/REPO:latest
 
 **Branches**:
 - `testing` - All development. Builds `:testing` images.
-- `main` - Production only. Builds `:latest` images. Never push directly.
+- `main` - Production only. Builds `:stable` images. Never push directly.
 
 **Conventional Commits** (REQUIRED):
 ```
@@ -285,13 +285,13 @@ git push origin testing
 # Merge Release Please PR on GitHub
 # → Creates GitHub Release with version tag
 # → Auto-merges testing → main
-# → Triggers build.yml → :latest image
+# → Triggers build.yml → :stable image
 ```
 
 **Workflows**:
 - `build-testing.yml` - Builds `:testing` on push to testing
 - `release-please.yml` - Auto-creates/updates release PRs, auto-merges to main
-- `build.yml` - Builds `:latest` on main
+- `build.yml` - Builds `:stable` on main
 - `renovate.json` - Monitors base image updates (every 6 hours)
 - `ghcr-pruner.yml` - Deletes images >90 days (weekly)
 
@@ -345,7 +345,7 @@ COSIGN_PASSWORD="" cosign generate-key-pair
 | Build fails: "package not found" | Typo or unavailable | Check spelling, verify on RPMfusion, add COPR if needed |
 | Build fails: "base image not found" | Invalid FROM line | Check syntax in `Containerfile` line 5 |
 | Release Please no PRs | Missing setup | Enable Actions permissions, use conventional commits, push to testing |
-| Changes not in production | Wrong workflow | Push to testing first, merge Release Please PR to get `:latest` |
+| Changes not in production | Wrong workflow | Push to testing first, merge Release Please PR to get `:stable` |
 | ISO missing customizations | Wrong bootc URL | Update `iso/iso.toml` bootc switch URL to match repo |
 | COPR packages missing after boot | COPR not disabled | COPRs persist if not disabled - use `copr_install_isolated` |
 | ujust commands not working | Wrong install location | Files must be in `custom/ujust/` and copied to `/usr/share/ublue-os/just/` |
@@ -384,8 +384,8 @@ See `build/copr-install-functions.sh` for reusable patterns:
 - `testing.20250129` - Datestamped testing
 
 **Main branch** (production releases):
-- `latest` - Latest release
-- `latest.20250129` - Datestamped release
+- `stable` - Latest stable release (recommended)
+- `stable.20250129` - Datestamped stable release
 - `20250129` - Date only
 - `v1.0.0` - Version from Release Please
 
