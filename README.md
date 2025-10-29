@@ -25,10 +25,12 @@ This template provides everything you need to create a custom Linux operating sy
 - Includes browsers, productivity apps, and GNOME utilities
 - See [custom/flatpaks/README.md](custom/flatpaks/README.md) for details
 
-### Handheld Daemon (HHD)
-- Optional support for gaming handhelds (Steam Deck, ROG Ally, Legion Go)
-- Provides controller mappings and performance tweaks
-- Enable by uncommenting in build scripts
+### Rechunker
+- Optimizes container image layer distribution for faster downloads
+- Reduces initial download size and improves update efficiency
+- Automatically enabled in GitHub Actions workflow
+- Based on [hhd-dev/rechunk](https://github.com/hhd-dev/rechunk)
+- No manual configuration required
 
 ### ujust Commands
 - User-friendly command shortcuts via `ujust`
