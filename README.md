@@ -2,6 +2,16 @@
 
 A template for building custom bootc operating system images based on the lessons from [Universal Blue](https://universal-blue.org/) and [Bluefin](https://projectbluefin.io). It is designed and documented for use with Copilot to ease maintenance.
 
+## Get Started
+
+1. Click the green button use this as a template and create a new repository
+2. Select your owner, pick a repo name for your OS, and a description
+3. In the "Jumpstart your project with Copilot (optional)" add this, modify to your liking):
+
+```
+Make a new bootc custom operating system using this template named after the repository name. Replace the README with onboarding instructions that lists the tasks that I must accomplish to finish the task.
+```
+
 ## What's Included
 
 ### Build System
