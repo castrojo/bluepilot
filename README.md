@@ -1,6 +1,8 @@
 # finpilot
 
-A template for building custom bootc operating system images based on the lessons from [Universal Blue](https://universal-blue.org/) and [Bluefin](https://projectbluefin.io). It is designed and documented for use with Copilot to ease maintenance.
+A template for building custom bootc operating system images based on the lessons from [Universal Blue](https://universal-blue.org/) and [Bluefin](https://projectbluefin.io). It is designed to be used manually, but is optimized to be bootstraped by GitHub Copilot. After set up you'll have your own custom Linux. 
+
+> Be the one who moves, not the one who is moved.
 
 ## Get Started
 
@@ -9,7 +11,7 @@ A template for building custom bootc operating system images based on the lesson
 3. In the "Jumpstart your project with Copilot (optional)" add this, modify to your liking):
 
 ```
-Make a new bootc custom operating system using this template named after the repository name. Replace the README with onboarding instructions that lists the tasks that I must accomplish to finish the task.
+Use @castrojo/finpilot as a template, name the OS the repository name. Ensure the entire operating system is bootstrapped. Ensure all github actions are enabled and running.  Ensure the README has the github setup instructions for cosign and the other steps required to finish the task.
 ```
 
 ## What's Included
